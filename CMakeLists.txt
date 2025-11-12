@@ -18,6 +18,7 @@ endif()
 
 add_executable(${PROJECT_NAME}
         "src/main.cpp"
+        src/body.h
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
