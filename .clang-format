@@ -1,5 +1,0 @@
-BasedOnStyle: Google
-DerivePointerAlignment: false
-PointerAlignment: Right
-QualifierAlignment: Left
-IndentWidth: 4
