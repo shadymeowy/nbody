@@ -7,7 +7,7 @@
 #include <cmath>
 
 struct Vec3 {
-    double_t x, y, z;
+	double_t v[3];
 };
 
 struct Body {
