@@ -7,12 +7,12 @@
 #include <cmath>
 
 struct Vec3 {
-	double_t v[3];
+	double v[3];
 };
 
 struct Body {
     uint32_t id;
-    double_t mass;
+    double mass;
     Vec3 pos;
     Vec3 vel;
 };
