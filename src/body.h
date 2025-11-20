@@ -6,8 +6,10 @@
 #define NBODY_BODY_H
 #include <cmath>
 
+constexpr double G = 6.674e-11;
+
 struct Vec3 {
-	double v[3];
+    double v[3];
 };
 
 struct Body {
@@ -16,5 +18,19 @@ struct Body {
     Vec3 pos;
     Vec3 vel;
 };
+
+inline double square(double d);
+
+inline Vec3 minus(const Vec3 &v1, const Vec3 &v2);
+
+inline Vec3 dot(const Vec3 &v1, const Vec3 &v2);
+
+inline Vec3 scale(const Vec3 &v, double alpha);
+
+inline double length_square(const Vec3 &v);
+
+inline double length(const Vec3 &v);
+
+Vec3 calculate_attraction(const Body &b1, const Body &b2);
 
 #endif  // NBODY_BODY_H
