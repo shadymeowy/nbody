@@ -60,7 +60,40 @@ void simulate_brute_force(std::vector<Body> &bodies, const double dt) noexcept {
     }
 }
 
+struct ProgramArgs {
+    std::string strategy;
+};
+
+ProgramArgs parse_args(const int argc, char **argv) {
+    ProgramArgs program_args = {};
+    for (int i = 1; i < argc; i++) {
+        if (strcmp("--strategy", argv[i]) == 0) {
+            const char *strategy_arg = argv[i + 1];
+            program_args.strategy = strategy_arg;
+            if (program_args.strategy != "BruteForce" &&
+                program_args.strategy != "BarnesHut") {
+                std::cerr << "program strategy must be \"BruteForce\" or "
+                             "\"BarnesHut\""
+                          << std::endl;
+                exit(1);
+            }
+        }
+    }
+
+    return program_args;
+}
+
+void run_brute_force_simulation(std::vector<Body> bodies, const double dt) {
+    while (true) {
+        simulate_brute_force(bodies, dt);
+        const auto &body = bodies[BODY_ID];
+        debug_print_body(body);
+    }
+}
+
 int main(int argc, char **argv) {
+    const ProgramArgs program_args = parse_args(argc, argv);
+
     std::mt19937 rng(SEED);
     std::uniform_real_distribution<double> dist(0, 1);
     std::vector bodies(2, Body{});
@@ -97,14 +130,15 @@ int main(int argc, char **argv) {
     //     i++;
     // }
 
-    for (const auto &body : bodies) {
-        debug_print_body(body);
-    }
-
     constexpr double dt = 1.0l / 60.0l;
-    while (true) {
-        simulate_brute_force(bodies, dt);
-        const auto &body = bodies[BODY_ID];
-        debug_print_body(body);
+    if (program_args.strategy == "BruteForce") {
+        run_brute_force_simulation(bodies, dt);
+    } else if (program_args.strategy == "BarnesHut") {
+        std::cerr << "BarnesHut simulation not implemented yet" << std::endl;
+        exit(1);
+    } else {
+        std::cerr << "no strategy was chosen (BruteForce or BarnesHut)"
+                  << std::endl;
+        exit(1);
     }
 }
