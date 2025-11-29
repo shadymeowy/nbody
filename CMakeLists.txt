@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project(nbody
-        VERSION 1.0
-        LANGUAGES CXX C
+    VERSION 1.0
+    LANGUAGES CXX C
 )
 
 set(CMAKE_CXX_STANDARD 20)
@@ -17,9 +17,8 @@ if (OPENMP_FOUND)
 endif()
 
 add_executable(${PROJECT_NAME}
-        "src/main.cpp"
-        src/body.h
-        src/body.cpp
+    src/main.cpp
+    src/body.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
