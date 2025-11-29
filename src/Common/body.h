@@ -36,6 +36,7 @@ inline double length(const Vec3 &v);
 
 Vec3 calculate_attraction(const Body &b1, const Body &b2);
 
-void BarnesHutApproximation(std::vector<Body>& bodies, double dt, double theta, int steps);
+void BarnesHutApproximation(std::vector<Body> &bodies, double dt, double theta,
+                            uint32_t steps);
 
 #endif  // NBODY_BODY_H
