@@ -85,7 +85,7 @@ void recursively_subdivide(Octan& oct) {
     oct7->zmax = oct.zmax;
     init_leaf_octants(*oct7);
 
-    // Assign children
+    // Assigning children!
     oct.children[0] = oct0;
     oct.children[1] = oct1;
     oct.children[2] = oct2;

@@ -1,8 +1,6 @@
 #include "Octan.h"
 #include "body.h"
 #include <fstream>
-extern Vec3 calculateForce(int body_idx, const std::vector<Body>& bodies, Octan* octan, double theta);
-extern Octan* buildOctree(std::vector<Body>& bodies);
 
 void calculateAllForce(std::vector<Body>& bodies, Octan* octan, double theta) {
     for (int i = 0; i < bodies.size(); i++) {
@@ -53,7 +51,7 @@ void handleCollision(Body* a, Body* b) {
     b->pos.v[1] += ny * overlap * ratioB;
     b->pos.v[2] += nz * overlap * ratioB;
 
-    // Adjust velocities!
+    // Adjusting velocities!
     double dvx = a->vel.v[0] - b->vel.v[0];
     double dvy = a->vel.v[1] - b->vel.v[1];
     double dvz = a->vel.v[2] - b->vel.v[2];
@@ -82,7 +80,8 @@ bool checkCollision(Body* a, Body* b) {
     double dx = a->pos.v[0] - b->pos.v[0];
     double dy = a->pos.v[1] - b->pos.v[1];
     double dz = a->pos.v[2] - b->pos.v[2];
-    double distance = sqrt(dx*dx + dy*dy + dz*dz);
+    double distance = dx*dx + dy*dy + dz*dz;
+    //double distancesqrt = sqrt(dx*dx + dy*dy + dz*dz);
     double distance_sum = a->radius + b->radius;
     return distance < distance_sum*distance_sum;
 }
@@ -96,11 +95,14 @@ void detectCollisionsOctree(int body_idx, Body* body, Octan* octan) {
 
     // Maximum possible collision distance!
     double octantSize = octan->xmax - octan->xmin;
-    double maxDist = (octan->xmax-octan->xmin) * 1.732 + body->radius;
+    // we are calculating the maximum distance to see whether they are too far away from each other for collision!
+    // the variable 1.732 about sqrt(3) which is the space diagonal of the unit cube
+    // distance from a Center of Mass (COM) to the farthest point in octant = octant size * sqrt(3) and adding the body radius!
+    double maxDist = octantSize * 1.732 + body->radius;
+    // if they are very far from each other, no need to make detection!
     if (distance > maxDist) {
         return;
     }
-
     if (octan->is_leaf) {
         if (!octan->has_body) {
             return;
@@ -111,12 +113,13 @@ void detectCollisionsOctree(int body_idx, Body* body, Octan* octan) {
         if (octan->body_index == body_idx) {
             return;
         }
+        // preventing the same pair to be checked twice!
         if (body_idx > octan->body_index) return;
-
+        // invalid index check!
         if (octan->body_index < 0) {
             return;
         }
-
+        // if an collision exist!!
         if (checkCollision(body, &octan->body)) {
             //std::cout << "COLLISION: Body " << body_idx
             //                      << " and Body " << octan->body_index << "\n";
@@ -124,6 +127,7 @@ void detectCollisionsOctree(int body_idx, Body* body, Octan* octan) {
         }
         return;
     }
+    // recursively check all the children if octan has a body!!
     for (int i=0; i<8; i++) {
         if (octan->children[i] != nullptr) {
             detectCollisionsOctree(body_idx, body, octan->children[i]);
@@ -149,7 +153,7 @@ void updateBodies(std::vector<Body>& bodies, double dt) {
         bodies[i].vel.v[1] += ay * dt;
         bodies[i].vel.v[2] += az * dt;
 
-        // update position!
+        // updating positions!
         bodies[i].pos.v[0] += bodies[i].vel.v[0] * dt;
         bodies[i].pos.v[1] += bodies[i].vel.v[1] * dt;
         bodies[i].pos.v[2] += bodies[i].vel.v[2] * dt;
@@ -175,7 +179,7 @@ void BarnesHutApproximation(std::vector<Body>& bodies, double dt, double theta, 
     file << "step,body_id,x,y,z,vx,vy,vz,mass,radius\n";
 
     for (int step = 0; step < steps; step++) {
-        // Write current state to CSV FIRST (before update for step 0)
+        // Writing only the current state!
         for (size_t i = 0; i < bodies.size(); i++) {
             file << step << ","
                  << bodies[i].id << ","
@@ -199,7 +203,7 @@ void BarnesHutApproximation(std::vector<Body>& bodies, double dt, double theta, 
         detectAllCollisions(bodies, root);
         // Update velocity and positions
         updateBodies(bodies, dt);
-        // Free memory
+        // Free memory of the octree for the current step which will be invalid at that time!
         DeleteOctree(root);
     }
 

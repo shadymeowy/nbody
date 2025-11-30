@@ -1,6 +1,8 @@
 #include "Octan.h"
 #include "body.h"
 
+
+//  the indexing of the octant has been made within this code!
 int get_octant(const Octan& oct, const Body& body) {
     double xmid = 0.5 * (oct.xmin + oct.xmax);
     double ymid = 0.5 * (oct.ymin + oct.ymax);

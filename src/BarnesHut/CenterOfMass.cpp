@@ -5,7 +5,7 @@
 void centerOfMass(Octan* octan) {
 
     if (octan->is_leaf) {
-        // Handle empty leaf!
+        // Handling empty leaf!
         if (!octan->has_body) {
             octan->body_mass = 0.0f;
             octan->COM.v[0] = 0.0f;
@@ -14,7 +14,7 @@ void centerOfMass(Octan* octan) {
             return;
         }
 
-        // Leaf with body
+        // Leaf octant with body!
         octan->body_mass = octan->body.mass;
         octan->COM.v[0] = octan->body.pos.v[0];
         octan->COM.v[1] = octan->body.pos.v[1];

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ranges>
 #include <vector>
 #include "body.h"
 #include "Octan.h"
@@ -8,7 +9,7 @@ void insert_body(Octan& oct, const std::vector<Body>& bodies, int body_idx, int&
     const Body& body = bodies[body_idx];
     max_depth = std::max(max_depth, oct.depth);
 
-    // CASE 1: Empty leaf - simple insertion
+    // if Empty leaf, insert the body!
     if (oct.is_leaf && !oct.has_body) {
         oct.has_body = true;
         oct.body_index = body_idx;
@@ -20,32 +21,32 @@ void insert_body(Octan& oct, const std::vector<Body>& bodies, int body_idx, int&
         return;
     }
 
-    // CASE 2: Leaf with a body - need to subdivide
+    // if Leaf has a body, we need to subdivide it to be ensure that each octan contains only 1 body!
     if (oct.is_leaf && oct.has_body) {
-        // CRITICAL: Store existing body BEFORE subdivision
+        // Storing body avaliable in octree before recursive subdivision!
         int existing_body_idx = oct.body_index;
         const Body& existing_body = bodies[existing_body_idx];
 
-        // Subdivide
+        // Subdivide recursively!
         recursively_subdivide(oct);
         max_depth = std::max(max_depth, oct.depth);
 
-        // CRITICAL: Clear parent's body info (it's now internal)
+        // Clear parent's information!
         oct.has_body = false;
         oct.body_index = -1;
 
-        // Find where each body goes
+        // Find where each body will be present in octree!
         int existing_octant = get_octant(oct, existing_body);
         int new_octant = get_octant(oct, body);
 
-        // Recursively insert BOTH bodies
+        // Recursively insert both bodies into octree!
         insert_body(*oct.children[existing_octant], bodies, existing_body_idx, max_depth);
         insert_body(*oct.children[new_octant], bodies, body_idx, max_depth);
 
         return;
     }
 
-    // CASE 3: Internal node - route to child
+    // Internal Nodes/Octants!
     if (!oct.is_leaf) {
         int octant = get_octant(oct, body);
         insert_body(*oct.children[octant], bodies, body_idx, max_depth);
@@ -54,8 +55,10 @@ void insert_body(Octan& oct, const std::vector<Body>& bodies, int body_idx, int&
 
 Octan* buildOctree(std::vector<Body>& bodies) {
 
+    // this is spacetree depth, this should not be too large!
     int spacetreedepth = 0;
 
+    // the bounding box of the octree!
     double xmin = bodies[0].pos.v[0];
     double xmax = bodies[0].pos.v[0];
     double ymin = bodies[0].pos.v[1];
@@ -63,6 +66,8 @@ Octan* buildOctree(std::vector<Body>& bodies) {
     double zmin = bodies[0].pos.v[2];
     double zmax = bodies[0].pos.v[2];
 
+    // the bounding box is updated followingly to get an dynamic structure
+    // for handling the changes in the data of the bodies!
     for (size_t i = 1; i < bodies.size(); i++) {
         if (bodies[i].pos.v[0] < xmin) xmin = bodies[i].pos.v[0];
         if (bodies[i].pos.v[0] > xmax) xmax = bodies[i].pos.v[0];
@@ -72,17 +77,17 @@ Octan* buildOctree(std::vector<Body>& bodies) {
         if (bodies[i].pos.v[2] > zmax) zmax = bodies[i].pos.v[2];
     }
 
-    // add small padding!
+    // adding small allowance to prevent that the points are at the edge of the octree!
     double range = std::max({xmax - xmin, ymax - ymin, zmax - zmin});
-    double padding = 0.01 * range;
-    xmin -= padding;
-    xmax += padding;
-    ymin -= padding;
-    ymax += padding;
-    zmin -= padding;
-    zmax += padding;
+    double allowance = 0.01 * range;
+    xmin -= allowance;
+    xmax += allowance;
+    ymin -= allowance;
+    ymax += allowance;
+    zmin -= allowance;
+    zmax += allowance;
 
-    // create root node!
+    // creating root octant!
     Octan* root = new Octan();
     root->xmin = xmin;
     root->xmax = xmax;
@@ -93,14 +98,10 @@ Octan* buildOctree(std::vector<Body>& bodies) {
 
     root->is_leaf = true;
 
-    // Insert the bodies into the octree
+    // Inserting the bodies into the octree!
     for (int i = 0; i < static_cast<int>(bodies.size()); ++i) {
         insert_body(*root, bodies, i, spacetreedepth);
     }
-
-    //std::cout << "Successfully inserted " << bodies.size() << " bodies\n";
-    //std::cout << "Maximum tree depth: " << spacetreedepth << "\n";
-    //print_tree_structure(*root, 0, -1);
 
     return root;
 }

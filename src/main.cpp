@@ -103,25 +103,25 @@ int main(int argc, char **argv) {
     std::uniform_real_distribution<double> mass_dist(1e15, 1e20);
     std::uniform_real_distribution<double> vel_dist(-1e4, 1e4);
     std::uniform_real_distribution<double> z_dist(-1e10, 1e10);
-
+    // Data collection of the planets avaliable in our solar system has been made!
     // Sun
     bodies[0] = Body{.id = 0, .mass = 1.989e30,
                      .pos = Vec3{0, 0, 0},
-                     .vel = Vec3{0, 0, 0}, .radius = 6.96e8};  // meters
+                     .vel = Vec3{0, 0, 0}, .radius = 6.96e8};
 
     // Mercury
     bodies[1] = Body{.id = 1, .mass = 3.30e23,
-                     .pos = Vec3{5.79e10, 0, 0},    // 57.9 million km in meters
+                     .pos = Vec3{5.79e10, 0, 0},
                      .vel = Vec3{0, 4.74e4, 0}, .radius = 2.44e6};
 
     // Venus
     bodies[2] = Body{.id = 2, .mass = 4.87e24,
-                     .pos = Vec3{1.082e11, 0, 0},   // 108.2 million km in meters
+                     .pos = Vec3{1.082e11, 0, 0},
                      .vel = Vec3{0, 3.5e4, 0}, .radius = 6.05e6};
 
     // Earth
     bodies[3] = Body{.id = 3, .mass = 5.97e24,
-                     .pos = Vec3{1.496e11, 0, 0},   // 1 AU in meters
+                     .pos = Vec3{1.496e11, 0, 0},
                      .vel = Vec3{0, 2.98e4, 0}, .radius = 6.37e6};
 
     // Mars
@@ -180,7 +180,7 @@ int main(int argc, char **argv) {
     //     body = Body{.id = i,
     //                 .mass = MASS_FACTOR * dist(rng),
     //                 .pos =
-    //                     Vec3{
+    //        §             Vec3{
     //                         dist(rng),
     //                         dist(rng),
     //                         dist(rng),
@@ -197,7 +197,6 @@ int main(int argc, char **argv) {
         run_brute_force_simulation(bodies, dt);
     } else if (program_args.strategy == "BarnesHut") {
         BarnesHutApproximation(bodies, dt, theta, steps);
-
     } else {
         std::cerr << "no strategy was chosen (BruteForce or BarnesHut)"
                   << std::endl;

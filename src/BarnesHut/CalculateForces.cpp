@@ -15,7 +15,7 @@ Vec3 calculateForce(int body_idx, const std::vector<Body>& bodies, Octan* octan,
     double squaresum = dx*dx + dy*dy + dz*dz;
     double distance = sqrt(squaresum);
 
-    // skip if same body or very close!
+    // skip if bodies are very close to each other!
     if (squaresum < 1e-10f) return force;
 
     if (octan->is_leaf && octan->has_body) {
