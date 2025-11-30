@@ -96,7 +96,7 @@ void detectCollisionsOctree(int body_idx, Body* body, Octan* octan) {
     // Maximum possible collision distance!
     double octantSize = octan->xmax - octan->xmin;
     // we are calculating the maximum distance to see whether they are too far away from each other for collision!
-    // the variable 1.732 about sqrt(3) which is the space diagonal of the unit cube
+    // the variable 1.732 is actually about sqrt(3) which is the space diagonal of the unit cube, taken as like this for efficiency!
     // distance from a Center of Mass (COM) to the farthest point in octant = octant size * sqrt(3) and adding the body radius!
     double maxDist = octantSize * 1.732 + body->radius;
     // if they are very far from each other, no need to make detection!

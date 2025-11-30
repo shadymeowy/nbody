@@ -26,7 +26,7 @@ struct Octan {
 };
 //void print_tree_structure(const Octan& node, int indent = 0, int octant_index = -1,
 //                          int* out_max_depth = nullptr, std::vector<int>* out_level_counts = nullptr);
-int get_octant(const Octan& oct, const Body& body);
+int getOctant(const Octan& oct, const Body& body);
 void init_leaf_octants(Octan& oct);
 void recursively_subdivide(Octan& oct);
 void centerOfMass(Octan* octan);

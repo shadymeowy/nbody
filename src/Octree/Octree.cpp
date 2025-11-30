@@ -36,8 +36,8 @@ void insert_body(Octan& oct, const std::vector<Body>& bodies, int body_idx, int&
         oct.body_index = -1;
 
         // Find where each body will be present in octree!
-        int existing_octant = get_octant(oct, existing_body);
-        int new_octant = get_octant(oct, body);
+        int existing_octant = getOctant(oct, existing_body);
+        int new_octant = getOctant(oct, body);
 
         // Recursively insert both bodies into octree!
         insert_body(*oct.children[existing_octant], bodies, existing_body_idx, max_depth);
@@ -48,7 +48,7 @@ void insert_body(Octan& oct, const std::vector<Body>& bodies, int body_idx, int&
 
     // Internal Nodes/Octants!
     if (!oct.is_leaf) {
-        int octant = get_octant(oct, body);
+        int octant = getOctant(oct, body);
         insert_body(*oct.children[octant], bodies, body_idx, max_depth);
     }
 }
