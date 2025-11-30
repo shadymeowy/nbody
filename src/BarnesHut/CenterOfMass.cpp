@@ -15,6 +15,8 @@ void centerOfMass(Octan* octan) {
         }
 
         // Leaf octant with body!
+        // if it contains just one body, we are going to initialize it as exactly the bodies
+        // mass and position
         octan->body_mass = octan->body.mass;
         octan->COM.v[0] = octan->body.pos.v[0];
         octan->COM.v[1] = octan->body.pos.v[1];
@@ -27,7 +29,8 @@ void centerOfMass(Octan* octan) {
     //octan->COM.v[0] = 0.0f;
     //octan->COM.v[1] = 0.0f;
     //octan->COM.v[2] = 0.0f;
-
+    // if it contains more than one point, what we are going to do will be recursively calculate the com and total mass
+    // for each children octant!
     for (int i=0; i<8; i++) {
         if (octan->children[i] != nullptr) {
             centerOfMass(octan->children[i]);
@@ -40,7 +43,9 @@ void centerOfMass(Octan* octan) {
             octan->body_mass += childMass;
         }
     }
-
+    // what we are doing is, we actually calculated the mass*COM for each of the octant's regardless of whether
+    // it contains a body or not!, so if it contains body what we are doing will be finalizing the com calculation
+    // by dividing with the total mass!
     if (octan->body_mass > 0.0f) {
         octan->COM.v[0] /= octan->body_mass;
         octan->COM.v[1] /= octan->body_mass;
