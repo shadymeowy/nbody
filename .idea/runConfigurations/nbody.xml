@@ -1,7 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="nbody" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="--strategy BarnesHut --seed 500 --stepcount 50000 --timestep 36" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="nbody" TARGET_NAME="nbody" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="nbody" RUN_TARGET_NAME="nbody">
-    <method v="2">
-      <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-    </method>
-  </configuration>
-</component>
