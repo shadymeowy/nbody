@@ -1,6 +1,8 @@
 # IN1503 - Advanced Programming (Group 25)
 This project is a simulation of an N-body system using Barnes-Hut algorithm for efficient computation of inverse square forces.
 
+<img src="docs/demo.gif" alt="Simulation demo" width="600"/>
+
 ## Features
 - Barnes-Hut algorithm using a octree structure for efficient force calculations
 - Brute-force method for comparison and validation
