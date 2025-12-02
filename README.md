@@ -2,6 +2,7 @@
 This project is a simulation of an N-body system using Barnes-Hut algorithm for efficient computation of inverse square forces.
 
 <img src="assets/demo.gif" alt="Simulation demo" width="600"/>
+
 (Visualization using `utils/visualize.py` on a ring scenario with 1024 bodies given below)
 
 ## Features
