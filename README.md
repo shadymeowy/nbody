@@ -21,6 +21,8 @@ This project is a simulation of an N-body system using Barnes-Hut algorithm for 
 1. Clone the repositor for sprint1 branch:
 ```bash
 git clone -b sprint1 https://gitlab.lrz.de/advprog2025/25.git
+# or use SSH
+git clone -b sprint1 git@gitlab.lrz.de:advprog2025/25.git
 cd 25
 ```
 2. Use cmake to build and test the project:
