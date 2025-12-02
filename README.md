@@ -120,7 +120,7 @@ Prints the help message and exits.
 **Ring scenario with Verlet integrator (100 years, 1024 bodies, timestep 0.1 years):**
 
 ```bash
-./build/nbody --timestep 1e-1 --output output.csv --integrator VERLET --scenario RING --duration 100 --num_bodies 1024
+./build/nbody --timestep 1e-1 --output ring_output.csv --integrator VERLET --scenario RING --duration 100 --num_bodies 1024
 ```
 
 **Cluster scenario using Barnes–Hut octree strategy:**
@@ -133,3 +133,15 @@ Prints the help message and exits.
 Two different Python scripts are provided for visualization:
 - `utils/plot.py`: Plots static graphs of the simulation data, only requires matplotlib.
 - `utils/visualize.py`: Uses a real-time rendering window for dynamic visualization, requires Linux or MacOS, and OpenCV for video saving.
+
+For plotting static graphs:
+```bash
+python3 utils/plot.py j2000_output.csv
+```
+
+For real-time visualization:
+```bash
+python3 utils/visualize.py ring_output.csv
+```
+
+Using `visualize.py` is not straightforward, so we recommend using it for ring scenario given above. In the next sprint, we will include a fully featured OpenGL 3.3 based visualizer for all platforms. `plot.py` is sufficient for basic analysis and visualization of any given results.
