@@ -2,6 +2,7 @@
 This project is a simulation of an N-body system using Barnes-Hut algorithm for efficient computation of inverse square forces.
 
 <img src="assets/demo.gif" alt="Simulation demo" width="600"/>
+(Visualization using `utils/visualize.py` on a ring scenario with 1024 bodies given below)
 
 ## Features
 - Barnes-Hut algorithm using a octree structure for efficient force calculations
@@ -10,6 +11,9 @@ This project is a simulation of an N-body system using Barnes-Hut algorithm for 
 - Fallback Euler's method for validation
 - CLI for easy configuration of simulation parameters
 - Different scenarios including clusters, rings, and NASA J2000 data for solar system
+- Energy conservation checks
+- Optional momentum zeroing at initialization for drift prevention
+- Configurable output intervals and progress reporting
 
 ## Requirements
 - Any C++20 compliant compiler
@@ -144,4 +148,7 @@ For real-time visualization:
 python3 utils/visualize.py ring_output.csv
 ```
 
-Using `visualize.py` is not straightforward, so we recommend using it for ring scenario given above. In the next sprint, we will include a fully featured OpenGL 3.3 based visualizer for all platforms. `plot.py` is sufficient for basic analysis and visualization of any given results.
+Using `visualize.py` is not straightforward, so we recommend using it for ring scenario given above. It is quite limited in functionality and platform support.
+In the next sprint, we will include a fully featured OpenGL 3.3 based visualizer for all platforms.
+
+`plot.py` is sufficient for basic analysis and visualization of any given results.
