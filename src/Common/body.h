@@ -5,6 +5,7 @@
 #ifndef NBODY_BODY_H
 #define NBODY_BODY_H
 #include <cmath>
+#include <iostream>
 
 constexpr double G = 6.674e-11;
 
@@ -17,6 +18,8 @@ struct Body {
     double mass;
     Vec3 pos;
     Vec3 vel;
+    Vec3 force;
+    double radius;
 };
 
 inline double square(double d);
@@ -32,5 +35,8 @@ inline double length_square(const Vec3 &v);
 inline double length(const Vec3 &v);
 
 Vec3 calculate_attraction(const Body &b1, const Body &b2);
+
+void BarnesHutApproximation(std::vector<Body> &bodies, double dt, double theta,
+                            uint32_t steps);
 
 #endif  // NBODY_BODY_H
