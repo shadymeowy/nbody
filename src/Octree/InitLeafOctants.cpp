@@ -1,6 +1,6 @@
 #include "Octan.h"
 
-
+// in this function, the newly formed octant's properties, from recursive subdivision, has been initialized!
 void init_leaf_octants(Octan& oct) {
     oct.is_leaf = true;
     oct.has_body = false;

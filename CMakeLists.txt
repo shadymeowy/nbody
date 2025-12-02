@@ -26,6 +26,7 @@ add_executable(${PROJECT_NAME}
         "src/main.cpp"
         src/body.cpp
         src/Octree/Octree.cpp
+        src/Octree/PrintOctree.cpp
         src/Octree/get_octant.cpp
         src/Octree/SubdivideRecursively.cpp
         src/Octree/InitLeafOctants.cpp
