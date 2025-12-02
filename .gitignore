@@ -50,4 +50,4 @@ build/
 .idea/
 
 # VS Code files
-.vscode/
+.vscode/*.csv
