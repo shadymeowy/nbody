@@ -10,7 +10,7 @@
 namespace nbodysim {
 
 // TODO: get more interesting distributions for cluster
-auto generateRandomCluster(int num_bodies, uint32_t seed, double radius_au)
+auto generateRandomCluster(const int num_bodies, const uint32_t seed, const double radius_au)
     -> std::vector<Body> {
     std::vector<Body> cluster;
     cluster.reserve(num_bodies);
