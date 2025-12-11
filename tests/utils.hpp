@@ -4,7 +4,7 @@
 #include "common/vec.hpp"
 
 // ref: good old numpy's isclose
-// https://numpy.rg/doc/stable/reference/generated/numpy.isclose.html
+// https://numpy.org/doc/stable/reference/generated/numpy.isclose.html
 inline auto isclose(double a, double b, double atol = 1e-8, double rtol = 1e-5)
     -> bool {
     return std::abs(a - b) <= (atol + (rtol * std::abs(b)));
