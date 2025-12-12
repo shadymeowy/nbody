@@ -23,7 +23,7 @@ This project is a simulation of an N-body system using Barnes-Hut algorithm for 
 - OpenCV for video saving in visualization
 
 ## Building the Project
-1. Clone the repositor for sprint1 branch:
+1. Clone the repository for sprint1 branch:
 ```bash
 git clone -b sprint1 https://gitlab.lrz.de/advprog2025/25.git
 # or use SSH
