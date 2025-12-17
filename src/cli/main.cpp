@@ -8,7 +8,7 @@
 // so for details see other files
 //     for argument parsing, args.hpp and args.cpp
 //     for integrators, euler.hpp and verlet.hpp
-//     for strategies, bruteforce.hpp and barneshut.hpp
+//     for strategies, brute_force.hpp and barnes_hut.hpp
 //     for scenarios, cluster.hpp and solar.hpp
 
 #include <chrono>
@@ -22,15 +22,15 @@
 // project includes
 #include "cli/args.hpp"
 #include "common/body.hpp"
-#include "common/energyutils.hpp"
+#include "common/energy_utils.hpp"
 #include "integrator/euler.hpp"
-#include "integrator/simstate.hpp"
+#include "integrator/sim_state.hpp"
 #include "integrator/verlet.hpp"
 #include "scenario/cluster.hpp"
 #include "scenario/ring.hpp"
 #include "scenario/solar.hpp"
-#include "space/barneshut.hpp"
-#include "space/bruteforce.hpp"
+#include "space/barnes_hut.hpp"
+#include "space/brute_force.hpp"
 
 // namespace alias for convenience
 namespace nb = nbodysim;

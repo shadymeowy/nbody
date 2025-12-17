@@ -1,4 +1,4 @@
-#include "energyutils.hpp"
+#include "energy_utils.hpp"
 
 #include <cmath>
 #include <cstddef>
@@ -7,7 +7,7 @@
 #include "common/body.hpp"
 #include "common/constants.hpp"
 
-// see energyutils.hpp for details
+// see energy_utils.hpp for details
 
 namespace nbodysim {
 

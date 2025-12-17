@@ -1,5 +1,5 @@
 
-#include "bruteforce.hpp"
+#include "brute_force.hpp"
 
 #include <cmath>
 #include <cstddef>
@@ -9,7 +9,7 @@
 #include "common/constants.hpp"
 #include "common/vec.hpp"
 
-// see bruteforce.hpp for details
+// see brute_force.hpp for details
 
 namespace nbodysim {
 

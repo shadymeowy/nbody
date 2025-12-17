@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "common/body.hpp"
-#include "common/energyutils.hpp"
+#include "common/energy_utils.hpp"
 
 namespace nbodysim {
 

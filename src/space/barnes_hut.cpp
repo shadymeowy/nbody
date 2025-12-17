@@ -1,9 +1,9 @@
-#include "barneshut.hpp"
+#include "barnes_hut.hpp"
 
 #include <cstddef>
 #include <cstdint>
 
-// see bruteforce.hpp for details
+// see brute_force.hpp for details
 
 namespace nbodysim {
 

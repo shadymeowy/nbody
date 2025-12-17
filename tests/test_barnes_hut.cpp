@@ -5,12 +5,12 @@
 
 #include "common/body.hpp"
 #include "doctest.h"
-#include "integrator/simstate.hpp"
+#include "integrator/sim_state.hpp"
 #include "integrator/verlet.hpp"
 #include "scenario/cluster.hpp"
 #include "scenario/solar.hpp"
-#include "space/barneshut.hpp"
-#include "space/bruteforce.hpp"
+#include "space/barnes_hut.hpp"
+#include "space/brute_force.hpp"
 #include "utils.hpp"
 
 namespace nb = nbodysim;

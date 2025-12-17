@@ -1,4 +1,4 @@
-#include "simstate.hpp"
+#include "sim_state.hpp"
 
 #include <cstddef>
 #include <fstream>
@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-// see simstate.hpp for details
+// see sim_state.hpp for details
 
 namespace nbodysim {
 
