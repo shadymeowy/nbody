@@ -23,7 +23,7 @@ auto Arguments::parse(int argc, char **argv) -> Arguments {
     for (int i = 1; i < argc; i++) {
         // check if starts with --
         const std::string arg = argv[i];
-        if (arg.starts_with("--")) {
+        if (arg.rfind("--", 0) == 0) {
             // keyword argument
             const std::string &key = arg;
             std::string value;

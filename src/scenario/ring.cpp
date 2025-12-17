@@ -29,7 +29,7 @@ auto generateRandomRing(int num_bodies, uint32_t seed, double radius_au,
     // distribution various properties of bodies
     std::mt19937 gen(seed);
     std::normal_distribution<> dist_radius(radius_au, width_au);
-    std::uniform_real_distribution<> dist_angle(0.0, 2.0 * std::numbers::pi);
+    std::uniform_real_distribution<> dist_angle(0.0, 2.0 * constants::pi);
     std::exponential_distribution<> dist_mass(mass_astroid);
     std::uniform_real_distribution<> dist_z(-z_width * 0.5, z_width * 0.5);
 

@@ -15,6 +15,9 @@ namespace nbodysim {
 struct SimState {
     double time;
     std::vector<Body> bodies;
+
+    SimState(double t, const std::vector<Body> &bodies_)
+        : time(t), bodies(bodies_) {}
 };
 
 // save to csv
