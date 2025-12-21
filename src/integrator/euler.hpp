@@ -6,6 +6,7 @@
 // instead see verlet.hpp for better integrator with similar performance
 
 #include <cstddef>
+#include <functional>
 #include <vector>
 
 #include "common/body.hpp"
@@ -15,7 +16,7 @@ namespace nbodysim {
 
 template <typename F>
 auto simulateEuler(std::vector<Body> &bodies, size_t n_steps, double dt,
-                   size_t output_interval, F &f) -> std::vector<SimState> {
+                   size_t output_interval, F &&f) -> std::vector<SimState> {
     // get number of bodies and steps
     const size_t num_bodies = bodies.size();
 
@@ -36,7 +37,7 @@ auto simulateEuler(std::vector<Body> &bodies, size_t n_steps, double dt,
 
         for (size_t step = 0; step < output_interval; step++) {
             // compute accelerations for each body
-            f(bodies);
+            std::invoke<F>(f, bodies);
 
             // update velocities and positions (kick)
             for (size_t i = 0; i < num_bodies; i++) {

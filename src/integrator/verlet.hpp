@@ -13,6 +13,7 @@
 // but even for simple SOLAR scenario, it shows significant energy drift
 
 #include <cstddef>
+#include <functional>
 #include <iostream>
 #include <vector>
 
@@ -23,7 +24,7 @@ namespace nbodysim {
 
 template <typename F>
 auto simulateVerlet(std::vector<Body> &bodies, size_t n_steps, double dt,
-                    size_t output_interval, F &f_force)
+                    size_t output_interval, F &&f)
     -> std::vector<SimState> {
     // get number of bodies and steps
     const size_t num_bodies = bodies.size();
@@ -36,7 +37,7 @@ auto simulateVerlet(std::vector<Body> &bodies, size_t n_steps, double dt,
     states.reserve(n_steps);
 
     // initial force calculation
-    f_force(bodies);
+    std::invoke<F>(f, bodies);
 
     for (size_t block = 0; block < n_steps; block += output_interval) {
         const double current_time = static_cast<double>(block) * dt;
@@ -70,7 +71,7 @@ auto simulateVerlet(std::vector<Body> &bodies, size_t n_steps, double dt,
             }
 
             // compute accelerations for each body
-            f_force(bodies);
+            std::invoke<F>(f, bodies);
 
             // update velocities and positions (kick)
             for (size_t i = 0; i < num_bodies; i++) {
