@@ -1,8 +1,9 @@
 #pragma once
 
 // argument parsing for nbody simulation
-// using simple custom parser
-// (we would be using a proper library later sprints, pinky promise)
+// using CLI11 library as promised
+
+#include <spdlog/spdlog.h>
 
 #include <cstddef>
 #include <cstdint>

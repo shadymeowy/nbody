@@ -11,11 +11,12 @@
 //     for strategies, brute_force.hpp and barnes_hut.hpp
 //     for scenarios, cluster.hpp and solar.hpp
 
+#include <spdlog/spdlog.h>
+
 #include <chrono>
 #include <cmath>
 #include <cstddef>
 #include <functional>
-#include <ios>
 #include <iostream>
 #include <vector>
 
@@ -68,26 +69,25 @@ auto main(int argc, char **argv) -> int {
         }
     }
 
-    std::cout << "Starting simulation with " << bodies.size() << " bodies.\n";
+    spdlog::info("Starting simulation with {} bodies.", bodies.size());
 
     // calculate number of steps and output interval
     auto n_steps = static_cast<size_t>(args.duration / args.timestep);
     auto output_interval =
         static_cast<size_t>(std::ceil(args.output_interval / args.timestep));
 
-    std::cout << "Total steps: " << n_steps
-              << ", Output interval: " << output_interval << " steps.\n";
+    spdlog::info("Total steps: {}, Output interval: {} steps.", n_steps,
+                 output_interval);
 
     // zero momentum to avoid drift
     if (!args.nozmom) {
-        std::cout << "Zeroing momentum to avoid drift.\n";
+        spdlog::info("Zeroing momentum to avoid drift.");
         nb::zeroMomentum(bodies);
     }
 
     // calculate initial energy
     const double initial_energy = nb::totalEnergy(bodies);
-    std::cout << "Initial total energy: " << std::scientific << initial_energy
-              << "\n";
+    spdlog::info("Initial total energy: {:e}", initial_energy);
 
     // start timer
     auto start = std::chrono::high_resolution_clock::now();
@@ -131,23 +131,21 @@ auto main(int argc, char **argv) -> int {
 
     // print elapsed time
     const std::chrono::duration<double> elapsed = end - start;
-    std::cout << "Simulation completed in " << elapsed.count() << " seconds.\n";
-    std::cout << "Recorded " << states.size() << " simulation states.\n";
+    spdlog::info("Simulation completed in {} seconds.", elapsed.count());
+    spdlog::info("Recorded {} simulation states.", states.size());
 
     // calculate final energy
     const double final_energy = nb::totalEnergy(bodies);
-    std::cout << "Final total energy: " << std::scientific << final_energy
-              << "\n";
+    spdlog::info("Final total energy: {:e}", final_energy);
 
     // calculate and print relative energy error
     const double rel_error =
         std::abs((final_energy - initial_energy) / initial_energy) * 100.0;
-    std::cout << "Relative energy error (%): " << std::scientific << rel_error
-              << "\n";
+    spdlog::info("Relative energy error (%): {:e}", rel_error);
 
     // if output file is specified, save results
     if (!args.output.empty()) {
-        std::cout << "Saving results to " << args.output << " ...\n";
+        spdlog::info("Saving results to {} ...", args.output);
         nb::saveSimStateToCSV(states, args.output);
     }
 

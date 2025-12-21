@@ -1,8 +1,10 @@
 #include "args.hpp"
 
+#include <spdlog/spdlog.h>
+#include <spdlog/fmt/ostr.h>
+
 #include <CLI/CLI.hpp>
 #include <cstdlib>
-#include <iostream>
 #include <map>
 #include <string>
 
@@ -78,31 +80,23 @@ auto Arguments::parse(int argc, char **argv) -> Arguments {
         std::exit(app.exit(e));
     }
 
-    auto opt = app.get_option("--strategy");
-    std::cout << "Debug: " << app.get_option("--strategy")->as<std::string>()
-              << std::endl;
-
     args.print();
     return args;
 }
 
 auto Arguments::print() const -> void {
-    std::cout << "--- Simulation Arguments ---\n";
-
-    std::cout << "  Strategy: " << strategy << "\n";
-    std::cout << "  Scenario: " << scenario << "\n";
-    std::cout << "  Integrator: " << integrator << "\n";
-    std::cout << "  Duration: " << duration << " years\n";
-    std::cout << "  Timestep: " << timestep << " years\n";
-    std::cout << "  Output Interval: " << output_interval << " years\n";
-    std::cout << "  Zero Momentum: " << (nozmom ? "Disabled" : "Enabled")
-              << "\n";
-    std::cout << "  Number of Bodies: " << num_bodies << "\n";
-    std::cout << "  Seed: " << seed << "\n";
-    std::cout << "  Output File: " << (output.empty() ? "None" : output)
-              << "\n";
-
-    std::cout << "-----------------------------\n";
+    spdlog::info("--- Simulation Arguments ---");
+    spdlog::info("  Strategy: {}",  fmt::streamed(strategy));
+    spdlog::info("  Scenario: {}", fmt::streamed(scenario));
+    spdlog::info("  Integrator: {}", fmt::streamed(integrator));
+    spdlog::info("  Duration: {} years", duration);
+    spdlog::info("  Timestep: {} years", timestep);
+    spdlog::info("  Output Interval: {} years", output_interval);
+    spdlog::info("  Zero Momentum: {}", (nozmom ? "Disabled" : "Enabled"));
+    spdlog::info("  Number of Bodies: {}", num_bodies);
+    spdlog::info("  Seed: {}", seed);
+    spdlog::info("  Output File: {}", (output.empty() ? "None" : output));
+    spdlog::info("-----------------------------");
 }
 
 }  // namespace nbodysim
