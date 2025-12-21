@@ -29,8 +29,8 @@
 #include "scenario/cluster.hpp"
 #include "scenario/ring.hpp"
 #include "scenario/solar.hpp"
-#include "space/barnes_hut.hpp"
 #include "space/brute_force.hpp"
+#include "space/octree.hpp"
 
 // namespace alias for convenience
 namespace nb = nbodysim;
@@ -109,8 +109,8 @@ auto main(int argc, char **argv) -> int {
         }
         case nb::Arguments::Strategy::OCTREE: {
             // barnes-hut functor
-            const nb::BarnesHut barnes_hut{0.5};
-            space_strategy = barnes_hut;
+            const nb::Octree octree{0.5};
+            space_strategy = octree;
             break;
         }
     }

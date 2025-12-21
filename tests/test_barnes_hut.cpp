@@ -9,8 +9,8 @@
 #include "integrator/verlet.hpp"
 #include "scenario/cluster.hpp"
 #include "scenario/solar.hpp"
-#include "space/barnes_hut.hpp"
 #include "space/brute_force.hpp"
+#include "space/octree.hpp"
 #include "utils.hpp"
 
 namespace nb = nbodysim;
@@ -30,9 +30,9 @@ TEST_CASE("solar system barneshut vs brute force") {
                                         output_interval, nb::calculateForcesBF);
 
     // run barnes-hut simulation
-    nb::BarnesHut barnes_hut{0.5};
+    nb::Octree octree{0.5};
     auto states_bh = nb::simulateVerlet(bodies, n_steps, timestep,
-                                        output_interval, barnes_hut);
+                                        output_interval, octree);
 
     // compare final states
     const auto &final_bf = states_bf.back();
@@ -62,9 +62,9 @@ TEST_CASE("cluster barneshut vs brute force") {
                                         output_interval, nb::calculateForcesBF);
 
     // run barnes-hut simulation
-    nb::BarnesHut barnes_hut{0.5};
+    nb::Octree octree{0.5};
     auto states_bh = nb::simulateVerlet(bodies, n_steps, timestep,
-                                        output_interval, barnes_hut);
+                                        output_interval, octree);
 
     // compare final states
     const auto &final_bf = states_bf.back();
