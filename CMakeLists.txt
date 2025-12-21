@@ -32,6 +32,14 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(doctest)
 
+# get CLI11 as command line parser
+FetchContent_Declare(
+    CLI11
+    URL https://github.com/CLIUtils/CLI11/archive/refs/tags/v2.6.1.zip
+    DOWNLOAD_EXTRACT_TIMESTAMP ON
+)
+FetchContent_MakeAvailable(CLI11)
+
 # if supported, use faster compilation flags
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     add_compile_options(-O3 -march=native -flto)
@@ -46,18 +54,28 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # create a static library for core functionality
 # we will link this to the main executable and tests later
-file(GLOB_RECURSE CORE_SOURCES CONFIGURE_DEPENDS "src/*.cpp")
-add_library(nbody_core STATIC ${CORE_SOURCES})
+file(GLOB SOURCES_CORE CONFIGURE_DEPENDS 
+    "src/common/*.cpp"
+    "src/integrator/*.cpp"
+    "src/scenario/*.cpp"
+    "src/space/*.cpp"
+)
+
+add_library(nbody_core STATIC ${SOURCES_CORE})
 
 target_include_directories(nbody_core PUBLIC 
     "${CMAKE_CURRENT_SOURCE_DIR}/include"
     "${CMAKE_CURRENT_SOURCE_DIR}/src"
 )
 
+# find cli sources
+file(GLOB SOURCES_CLI CONFIGURE_DEPENDS 
+    "src/cli/*.cpp"
+)
 # create the main executable for the nbody simulator
-add_executable(nbody src/cli/main.cpp)
+add_executable(nbody ${SOURCES_CLI})
 # link core library to main executable
-target_link_libraries(nbody PRIVATE nbody_core)
+target_link_libraries(nbody PRIVATE nbody_core CLI11::CLI11)
 
 # enable testing module
 enable_testing()
