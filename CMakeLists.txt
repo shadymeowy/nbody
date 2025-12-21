@@ -40,6 +40,14 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(CLI11)
 
+# get spdlog as logging library
+FetchContent_Declare(
+    spdlog
+    URL https://github.com/gabime/spdlog/archive/refs/tags/v1.16.0.zip
+    DOWNLOAD_EXTRACT_TIMESTAMP ON
+)
+FetchContent_MakeAvailable(spdlog)
+
 # if supported, use faster compilation flags
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     add_compile_options(-O3 -march=native -flto)
@@ -61,11 +69,16 @@ file(GLOB SOURCES_CORE CONFIGURE_DEPENDS
     "src/space/*.cpp"
 )
 
+# create core library
 add_library(nbody_core STATIC ${SOURCES_CORE})
-
+# add include directories for core library
 target_include_directories(nbody_core PUBLIC 
     "${CMAKE_CURRENT_SOURCE_DIR}/include"
     "${CMAKE_CURRENT_SOURCE_DIR}/src"
+)
+# link spdlog to core library
+target_link_libraries(nbody_core PUBLIC 
+    spdlog::spdlog
 )
 
 # find cli sources
