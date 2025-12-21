@@ -39,9 +39,6 @@ auto main(int argc, char **argv) -> int {
     // parse arguments
     auto args = nb::Arguments::parse(argc, argv);
 
-    // print arguments
-    args.print();
-
     // use selected mode to initialize bodies
     std::vector<nb::Body> bodies;
     switch (args.scenario) {

@@ -6,23 +6,24 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <iostream>
 #include <string>
 
 namespace nbodysim {
 
 struct Arguments {
-    enum class Strategy : std::uint8_t {
+    enum class Strategy {
         BRUTE_FORCE,
         OCTREE,
     };
-    enum class Scenario: std::uint8_t {
+    enum class Scenario {
         CLUSTER,
         J2000,
         SIMPLE,
         RING,
         NONE,
     };
-    enum class Integrator : std::uint8_t {
+    enum class Integrator {
         EULER,
         VERLET,
     };
@@ -51,11 +52,47 @@ struct Arguments {
     // parse arguments from command line
     static auto parse(int argc, char **argv) -> Arguments;
 
-    // print help message
-    static void printHelp();
-
-    // print current arguments
-    void print() const;
+    // print arguments to console
+    auto print() const -> void;
 };
 
+// overload stream operators for enums for easy printing
+// TODO: maybe move to separate file?
+inline auto operator<<(std::ostream &os, const Arguments::Strategy &s)
+    -> std::ostream & {
+    switch (s) {
+        case Arguments::Strategy::BRUTE_FORCE:
+            return os << "BRUTE_FORCE";
+        case Arguments::Strategy::OCTREE:
+            return os << "OCTREE";
+    }
+    return os << "UNKNOWN";
+}
+
+inline auto operator<<(std::ostream &os, const Arguments::Scenario &s)
+    -> std::ostream & {
+    switch (s) {
+        case Arguments::Scenario::CLUSTER:
+            return os << "CLUSTER";
+        case Arguments::Scenario::J2000:
+            return os << "J2000";
+        case Arguments::Scenario::SIMPLE:
+            return os << "SIMPLE";
+        case Arguments::Scenario::RING:
+            return os << "RING";
+        default:
+            return os << "NONE";
+    }
+}
+
+inline auto operator<<(std::ostream &os, const Arguments::Integrator &i)
+    -> std::ostream & {
+    switch (i) {
+        case Arguments::Integrator::EULER:
+            return os << "EULER";
+        case Arguments::Integrator::VERLET:
+            return os << "VERLET";
+    }
+    return os << "UNKNOWN";
+}
 }  // namespace nbodysim
