@@ -9,15 +9,9 @@
 
 namespace nbodysim {
 
+// calculate gravitational forces on bodies using brute-force O(n^2) method
+// ie compute pairwise forces between all bodies
+// modifies bodies' accelerations inplace
 void calculateForcesBF(std::vector<Body> &bodies);
-
-// dummy functor to match octree interface
-class BruteForce {
-   public:
-    // functor operator to calculate forces
-    void operator()(std::vector<Body> &bodies) const {
-        calculateForcesBF(bodies);
-    }
-};
 
 }  // namespace nbodysim
