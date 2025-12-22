@@ -1,0 +1,10 @@
+strategy = "brute_force"
+scenario = "simple"
+integrator = "yoshida"
+duration = 250
+timestep = 1e-1
+output_interval = 1e-1
+nozmom = false
+# num_bodies = 0
+# seed = 42
+output = "simple.csv"

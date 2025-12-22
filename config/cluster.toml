@@ -1,6 +1,6 @@
-strategy = octree
-scenario = cluster
-integrator = yoshida
+strategy = "octree"
+scenario = "cluster"
+integrator = "yoshida"
 duration = 100
 timestep = 1e-6
 output_interval = 1e-1
