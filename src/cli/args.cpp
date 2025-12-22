@@ -31,7 +31,8 @@ auto Arguments::parse(int argc, char **argv) -> Arguments {
 
     std::map<std::string, Arguments::Integrator> integrator_map{
         {"EULER", Arguments::Integrator::EULER},
-        {"VERLET", Arguments::Integrator::VERLET}};
+        {"VERLET", Arguments::Integrator::VERLET},
+        {"YOSHIDA", Arguments::Integrator::YOSHIDA}};
 
     // add options
     app.add_option("--strategy", args.strategy, "Simulation strategy")

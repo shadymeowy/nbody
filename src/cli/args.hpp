@@ -27,6 +27,7 @@ struct Arguments {
     enum class Integrator {
         EULER,
         VERLET,
+        YOSHIDA,
     };
 
     // "space handling" strategy
@@ -93,6 +94,8 @@ inline auto operator<<(std::ostream &os, const Arguments::Integrator &i)
             return os << "EULER";
         case Arguments::Integrator::VERLET:
             return os << "VERLET";
+        case Arguments::Integrator::YOSHIDA:
+            return os << "YOSHIDA";
     }
     return os << "UNKNOWN";
 }

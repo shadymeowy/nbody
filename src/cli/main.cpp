@@ -27,6 +27,7 @@
 #include "integrator/euler.hpp"
 #include "integrator/sim_state.hpp"
 #include "integrator/verlet.hpp"
+#include "integrator/yoshida.hpp"
 #include "scenario/cluster.hpp"
 #include "scenario/ring.hpp"
 #include "scenario/solar.hpp"
@@ -121,6 +122,11 @@ auto main(int argc, char **argv) -> int {
         }
         case nb::Arguments::Integrator::VERLET: {
             states = nb::simulateVerlet(bodies, n_steps, args.timestep,
+                                        output_interval, space_strategy);
+            break;
+        }
+        case nb::Arguments::Integrator::YOSHIDA: {
+            states = nb::simulateYoshida(bodies, n_steps, args.timestep,
                                         output_interval, space_strategy);
             break;
         }
