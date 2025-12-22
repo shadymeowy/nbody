@@ -1,7 +1,7 @@
 #include "args.hpp"
 
-#include <spdlog/spdlog.h>
 #include <spdlog/fmt/ostr.h>
+#include <spdlog/spdlog.h>
 
 #include <CLI/CLI.hpp>
 #include <cstdlib>
@@ -41,7 +41,7 @@ auto Arguments::parse(int argc, char **argv) -> Arguments {
 
     app.add_option("--scenario", args.scenario, "Initial condition scenario")
         ->transform(CLI::CheckedTransformer(scenario_map, CLI::ignore_case))
-        ->required();
+        ->capture_default_str();
 
     app.add_option("--integrator", args.integrator, "Simulation integrator")
         ->transform(CLI::CheckedTransformer(integrator_map, CLI::ignore_case))
@@ -72,6 +72,11 @@ auto Arguments::parse(int argc, char **argv) -> Arguments {
 
     app.add_option("--output", args.output, "Output file path (CSV)");
 
+    // configuration file option
+    app.set_config("--config")
+        ->description("Read settings from a file")
+        ->expected(1);
+
     // try to parse arguments
     try {
         app.parse(argc, argv);
@@ -87,7 +92,7 @@ auto Arguments::parse(int argc, char **argv) -> Arguments {
 
 auto Arguments::print() const -> void {
     spdlog::info("--- Simulation Arguments ---");
-    spdlog::info("  Strategy: {}",  fmt::streamed(strategy));
+    spdlog::info("  Strategy: {}", fmt::streamed(strategy));
     spdlog::info("  Scenario: {}", fmt::streamed(scenario));
     spdlog::info("  Integrator: {}", fmt::streamed(integrator));
     spdlog::info("  Duration: {} years", duration);
