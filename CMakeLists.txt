@@ -43,6 +43,14 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(spdlog)
 
+# get indicators as progress bar library
+FetchContent_Declare(
+    indicators
+    URL https://github.com/p-ranav/indicators/archive/refs/tags/v2.3.zip
+    DOWNLOAD_EXTRACT_TIMESTAMP ON
+)
+FetchContent_MakeAvailable(indicators)
+
 # if supported, use faster compilation flags
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     add_compile_options(-O3 -march=native -flto)
@@ -86,7 +94,11 @@ file(GLOB SOURCES_CLI CONFIGURE_DEPENDS
 # create the main executable for the nbody simulator
 add_executable(nbody ${SOURCES_CLI})
 # link core library to main executable
-target_link_libraries(nbody PRIVATE nbody_core CLI11::CLI11)
+target_link_libraries(nbody PRIVATE
+    nbody_core
+    CLI11::CLI11
+    indicators::indicators
+)
 
 # enable testing module
 enable_testing()
@@ -96,7 +108,8 @@ file(GLOB_RECURSE TEST_SOURCES CONFIGURE_DEPENDS "tests/*.cpp")
 add_executable(nbody_test ${TEST_SOURCES})
 # link core library to tests
 target_link_libraries(nbody_test PRIVATE
-    nbody_core doctest::doctest
+    nbody_core
+    doctest::doctest
 )
 # add include directories for tests
 target_include_directories(nbody_test PRIVATE
