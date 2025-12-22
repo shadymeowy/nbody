@@ -22,7 +22,6 @@ struct Arguments {
         J2000,
         SIMPLE,
         RING,
-        NONE,
     };
     enum class Integrator {
         EULER,
@@ -33,7 +32,7 @@ struct Arguments {
     // "space handling" strategy
     Strategy strategy = Strategy::BRUTE_FORCE;
     // scenarios
-    Scenario scenario = Scenario::NONE;
+    Scenario scenario = Scenario::RING;
     // integrator
     Integrator integrator = Integrator::VERLET;
     // simulation parameters
