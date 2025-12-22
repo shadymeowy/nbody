@@ -37,7 +37,7 @@ auto simulateVerlet(std::vector<Body> &bodies, size_t n_steps, double dt,
     states.reserve(n_steps);
 
     // initial force calculation
-    std::invoke<F>(f, bodies);
+    std::invoke<F>(std::forward<F>(f), bodies);
 
     for (size_t block = 0; block < n_steps; block += output_interval) {
         const double current_time = static_cast<double>(block) * dt;
@@ -71,7 +71,7 @@ auto simulateVerlet(std::vector<Body> &bodies, size_t n_steps, double dt,
             }
 
             // compute accelerations for each body
-            std::invoke<F>(f, bodies);
+            std::invoke<F>(std::forward<F>(f), bodies);
 
             // update velocities and positions (kick)
             for (size_t i = 0; i < num_bodies; i++) {

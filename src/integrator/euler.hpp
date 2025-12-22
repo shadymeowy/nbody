@@ -37,7 +37,7 @@ auto simulateEuler(std::vector<Body> &bodies, size_t n_steps, double dt,
 
         for (size_t step = 0; step < output_interval; step++) {
             // compute accelerations for each body
-            std::invoke<F>(f, bodies);
+            std::invoke<F>(std::forward<F>(f), bodies);
 
             // update velocities and positions (kick)
             for (size_t i = 0; i < num_bodies; i++) {

@@ -84,7 +84,7 @@ auto simulateYoshida(std::vector<Body> &bodies, size_t n_steps, double dt,
 
                 // compute accelerations for each body
                 if (k < 3) {
-                    std::invoke<F>(f, bodies);
+                    std::invoke<F>(std::forward<F>(f), bodies);
                 }
             }
         }
