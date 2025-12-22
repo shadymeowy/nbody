@@ -26,6 +26,11 @@ auto Octree::calculateForces(std::vector<Body> &bodies, bool reset) -> void {
     }
 
     // loop over each body and calculate force using octree
+
+    // if available use parallel for
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic)
+#endif
     for (size_t i = 0; i < bodies.size(); ++i) {
         // reset acceleration
         bodies[i].acc = {0.0, 0.0, 0.0};
