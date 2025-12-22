@@ -17,6 +17,8 @@
 #include <cmath>
 #include <cstddef>
 #include <functional>
+#include <indicators/cursor_control.hpp>
+#include <indicators/progress_bar.hpp>
 #include <iostream>
 #include <vector>
 
@@ -113,21 +115,44 @@ auto main(int argc, char **argv) -> int {
         }
     }
 
+    // progress bar setup
+    indicators::ProgressBar bar{
+        indicators::option::BarWidth{50},
+        indicators::option::Start{"["},
+        indicators::option::End{"]"},
+        indicators::option::ForegroundColor{indicators::Color::white},
+        indicators::option::ShowElapsedTime{true},
+        indicators::option::ShowRemainingTime{true},
+        indicators::option::MaxProgress{n_steps},
+    };
+
+    // lambda to update progress bar
+    auto progress_updater = [&](size_t current_step) {
+        bar.set_progress(current_step);
+        if (current_step >= n_steps) {
+            bar.mark_as_completed();
+            std::cout << "\n" << std::flush;
+        }
+    };
+
     // run selected integrator
     switch (args.integrator) {
         case nb::Arguments::Integrator::EULER: {
             states = nb::simulateEuler(bodies, n_steps, args.timestep,
-                                       output_interval, space_strategy);
+                                       output_interval, space_strategy,
+                                       progress_updater);
             break;
         }
         case nb::Arguments::Integrator::VERLET: {
             states = nb::simulateVerlet(bodies, n_steps, args.timestep,
-                                        output_interval, space_strategy);
+                                        output_interval, space_strategy,
+                                        progress_updater);
             break;
         }
         case nb::Arguments::Integrator::YOSHIDA: {
             states = nb::simulateYoshida(bodies, n_steps, args.timestep,
-                                        output_interval, space_strategy);
+                                         output_interval, space_strategy,
+                                         progress_updater);
             break;
         }
     }

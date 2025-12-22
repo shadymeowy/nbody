@@ -25,14 +25,18 @@ TEST_CASE("solar system barneshut vs brute force") {
     const double timestep = 1e-6;
     const size_t output_interval = 10;
 
+    // empty progress updater
+    auto progress_updater = [](double) {};
+
     // run brute force simulation
-    auto states_bf = nb::simulateVerlet(bodies, n_steps, timestep,
-                                        output_interval, nb::calculateForcesBF);
+    auto states_bf =
+        nb::simulateVerlet(bodies, n_steps, timestep, output_interval,
+                           nb::calculateForcesBF, progress_updater);
 
     // run barnes-hut simulation
     nb::Octree octree{0.5};
-    auto states_bh = nb::simulateVerlet(bodies, n_steps, timestep,
-                                        output_interval, octree);
+    auto states_bh = nb::simulateVerlet(
+        bodies, n_steps, timestep, output_interval, octree, progress_updater);
 
     // compare final states
     const auto &final_bf = states_bf.back();
@@ -58,13 +62,14 @@ TEST_CASE("cluster barneshut vs brute force") {
     const size_t output_interval = 10;
 
     // run brute force simulation
-    auto states_bf = nb::simulateVerlet(bodies, n_steps, timestep,
-                                        output_interval, nb::calculateForcesBF);
+    auto states_bf =
+        nb::simulateVerlet(bodies, n_steps, timestep, output_interval,
+                           nb::calculateForcesBF, [](double) {});
 
     // run barnes-hut simulation
     nb::Octree octree{0.5};
     auto states_bh = nb::simulateVerlet(bodies, n_steps, timestep,
-                                        output_interval, octree);
+                                        output_interval, octree, [](double) {});
 
     // compare final states
     const auto &final_bf = states_bf.back();

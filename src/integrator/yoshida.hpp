@@ -3,13 +3,15 @@
 // implements symplectic "yoshida 4th order integrator"
 // generic over force calculation function (not force function itself, yet)
 
-// yoshida integration is a symplectic integrator which is similar to velocity verlet
-// but of order 4 instead of order 2. it requires 3 force calculations per step.
+// yoshida integration is a symplectic integrator which is similar to velocity
+// verlet but of order 4 instead of order 2. it requires 3 force calculations
+// per step.
+
+#include <spdlog/spdlog.h>
 
 #include <cmath>
 #include <cstddef>
 #include <functional>
-#include <iostream>
 #include <vector>
 
 #include "common/body.hpp"
@@ -17,9 +19,10 @@
 
 namespace nbodysim {
 
-template <typename F>
+template <typename F, typename R>
 auto simulateYoshida(std::vector<Body> &bodies, size_t n_steps, double dt,
-                     size_t output_interval, F &&f) -> std::vector<SimState> {
+                     size_t output_interval, F &&f, R &&r)
+    -> std::vector<SimState> {
     // get number of bodies and steps
     const size_t num_bodies = bodies.size();
 
@@ -59,9 +62,7 @@ auto simulateYoshida(std::vector<Body> &bodies, size_t n_steps, double dt,
         states.emplace_back(current_time, bodies);
 
         // print progress
-        // TODO: use proper logging system
-        std::cout << "\rSimulated " << (block * 100) / n_steps << "% of steps."
-                  << std::flush;
+        std::invoke<R>(std::forward<R>(r), block);
 
         // perform output_interval steps
         // hope is that compiler will optimize this loop well
@@ -89,9 +90,6 @@ auto simulateYoshida(std::vector<Body> &bodies, size_t n_steps, double dt,
             }
         }
     }
-
-    // TODO: use proper logging system
-    std::cout << "\rSimulated 100% of steps.            \n";
 
     // return recorded states with RVO
     return states;

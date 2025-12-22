@@ -5,6 +5,8 @@
 // simple but not very stable or accurate
 // instead see verlet.hpp for better integrator with similar performance
 
+#include <spdlog/spdlog.h>
+
 #include <cstddef>
 #include <functional>
 #include <vector>
@@ -14,9 +16,10 @@
 
 namespace nbodysim {
 
-template <typename F>
+template <typename F, typename R>
 auto simulateEuler(std::vector<Body> &bodies, size_t n_steps, double dt,
-                   size_t output_interval, F &&f) -> std::vector<SimState> {
+                   size_t output_interval, F &&f, R &&r)
+    -> std::vector<SimState> {
     // get number of bodies and steps
     const size_t num_bodies = bodies.size();
 
@@ -31,9 +34,7 @@ auto simulateEuler(std::vector<Body> &bodies, size_t n_steps, double dt,
         states.emplace_back(current_time, bodies);
 
         // print progress
-        // TODO: use proper logging system
-        std::cout << "\rSimulated " << (block * 100) / n_steps << "% of steps."
-                  << std::flush;
+        std::invoke<R>(std::forward<R>(r), block);
 
         for (size_t step = 0; step < output_interval; step++) {
             // compute accelerations for each body
@@ -57,9 +58,6 @@ auto simulateEuler(std::vector<Body> &bodies, size_t n_steps, double dt,
             }
         }
     }
-
-    // TODO: use proper logging system
-    std::cout << "\rSimulated 100% of steps.\n" << std::flush;
 
     // return recorded states with RVO
     return states;
