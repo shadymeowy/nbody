@@ -29,7 +29,8 @@ auto generateRandomRing(int num_bodies, uint32_t seed, double radius_au,
     std::mt19937 gen(seed);
     std::normal_distribution<> dist_radius(radius_au, width_au);
     std::uniform_real_distribution<> dist_angle(0.0, 2.0 * constants::pi);
-    std::exponential_distribution<> dist_mass(mass_astroid);
+    std::uniform_real_distribution<> dist_mass(0.1 * mass_astroid,
+                                               mass_astroid);
     std::uniform_real_distribution<> dist_z(-z_width * 0.5, z_width * 0.5);
 
     for (int i = 0; i < num_bodies; ++i) {
@@ -44,7 +45,7 @@ auto generateRandomRing(int num_bodies, uint32_t seed, double radius_au,
         b.pos = {x, y, z};
 
         // mass of body
-        b.mass = 1 / dist_mass(gen);
+        b.mass = dist_mass(gen);
 
         // calculate orbital velocity
         const double v_mag = std::sqrt(constants::g_au * central_body.mass / r);
