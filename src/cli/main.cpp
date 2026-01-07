@@ -35,6 +35,7 @@
 #include "scenario/solar.hpp"
 #include "space/brute_force.hpp"
 #include "space/octree.hpp"
+#include "viz/viz.hpp"
 
 // namespace alias for convenience
 namespace nb = nbodysim;
@@ -179,6 +180,8 @@ auto main(int argc, char **argv) -> int {
         spdlog::info("Saving results to {} ...", args.output);
         nb::saveSimStateToCSV(states, args.output);
     }
+
+    nb::viz::visualizeSimulation(states, 1.0F);
 
     return 0;
 }
