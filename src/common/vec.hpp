@@ -15,6 +15,18 @@ struct Vec3 {
            << ")";
         return os;
     }
+
+    // access operators
+    auto operator[](size_t idx) -> double & { return v[idx]; }
+    auto operator[](size_t idx) const -> const double & { return v[idx]; }
+
+    // x, y, z accessors
+    auto x() -> double & { return v[0]; }
+    auto y() -> double & { return v[1]; }
+    auto z() -> double & { return v[2]; }
+    auto x() const -> const double & { return v[0]; }
+    auto y() const -> const double & { return v[1]; }
+    auto z() const -> const double & { return v[2]; }
 };
 
 }  // namespace nbodysim
