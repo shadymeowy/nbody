@@ -51,6 +51,14 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(indicators)
 
+# fetch glviskit
+include(FetchContent)
+FetchContent_Declare(
+    glviskit
+    SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../drawing3d-gl"
+)
+FetchContent_MakeAvailable(glviskit)
+
 # if supported, use faster compilation flags
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     add_compile_options(-O3 -march=native -flto)
@@ -70,6 +78,7 @@ file(GLOB SOURCES_CORE CONFIGURE_DEPENDS
     "src/integrator/*.cpp"
     "src/scenario/*.cpp"
     "src/space/*.cpp"
+    "src/viz/*.cpp"
 )
 
 # create core library
@@ -82,6 +91,7 @@ target_include_directories(nbody_core PUBLIC
 # link spdlog to core library
 target_link_libraries(nbody_core PUBLIC 
     spdlog::spdlog
+    glviskit::glviskit
 )
 if (OpenMP_CXX_FOUND)
     target_link_libraries(nbody_core PUBLIC OpenMP::OpenMP_CXX)
