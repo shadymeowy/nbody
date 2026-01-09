@@ -3,3 +3,4 @@ DerivePointerAlignment: false
 PointerAlignment: Right
 QualifierAlignment: Left
 IndentWidth: 4
+AllowShortFunctionsOnASingleLine: Empty
