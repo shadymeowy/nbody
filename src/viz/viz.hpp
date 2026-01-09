@@ -4,6 +4,7 @@
 #include <glviskit/glviskit.hpp>
 #include <vector>
 
+#include "glviskit/render_list.hpp"
 #include "glviskit/sdl/window.hpp"
 #include "integrator/sim_state.hpp"
 
@@ -90,6 +91,7 @@ class App {
     std::shared_ptr<glviskit::sdl::Window> window_;
     std::shared_ptr<glviskit::RenderList> buffer_body_;
     std::shared_ptr<glviskit::RenderList> buffer_orbit_;
+    std::vector<std::shared_ptr<glviskit::Path>> paths_orbit_;
     float time_start_ = 0.0F;
 };
 

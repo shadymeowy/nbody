@@ -84,6 +84,21 @@ App::App(const std::vector<SimState> &states)
         sizes_.push_back(size);
     }
 
+    // insert paths into orbit buffer
+    for (size_t i = 0; i < body_count_; i++) {
+        auto &color = colors_[i];
+        auto &size = sizes_[i];
+        auto path = buffer_orbit_->PathBegin();
+
+        path->Size(orbit_width_);
+        path->Color({color.r, color.g, color.b, 0.4F});
+        paths_orbit_.push_back(path);
+    }
+
+    // save orbit path state so we can restore if
+    // simulation visualization restarts
+    buffer_orbit_->Save();
+
     // setup time parameters
     // they are used for interpolation during rendering
     start_time_ = times_.front();
@@ -139,7 +154,7 @@ void App::draw() {
         state_idx_curr_ = 0;
         // since we are not clearing orbit buffer but append continually
         // we need to clear it when restarting simulation visualization
-        buffer_orbit_->Clear();
+        buffer_orbit_->Restore();
     }
 
     // draw bodies with trails
@@ -148,28 +163,29 @@ void App::draw() {
     buffer_body_->Clear();
 
     // loop over bodies and states
+    auto path = buffer_body_->PathBegin();
     for (size_t i = 0; i < body_count_; i++) {
         auto &color = colors_[i];
         auto &size = sizes_[i];
-        buffer_body_->Size(size);
 
         // draw trail of each body by interpolating positions
         // backwards in time
+        path->Size(size);
         for (unsigned j = 0; j <= trail_segments_; j++) {
             const float alpha =
                 (static_cast<float>(j) / static_cast<float>(trail_segments_));
             const float t_trail = t_sim - (trail_length_ * alpha);
             const auto p = positionInterpolate(i, t_trail);
 
-            buffer_body_->Color(
-                {color.r, color.g, color.b, std::expf(-3.0F * alpha)});
-            buffer_body_->LineTo(p);
+            path->Color({color.r, color.g, color.b, std::expf(-3.0F * alpha)});
+            path->LineTo(p);
         }
-        buffer_body_->LineEnd();
+        path->LineEnd();
 
         // draw current body position
         // again by interpolation for smooth animation
         auto p = positionInterpolate(i, t_sim);
+        buffer_body_->Size(size);
         buffer_body_->Color({color.r, color.g, color.b, 1.0F});
         buffer_body_->Circle(p);
     }
@@ -181,18 +197,15 @@ void App::draw() {
         state_idx_curr_ = state_count_ - 1;
     }
 
-    // append new line segments to orbit buffer
-    buffer_orbit_->Size(orbit_width_);
+    // append new orbit segments
     for (size_t i = 0; i < body_count_; i++) {
         auto &color = colors_[i];
         auto &size = sizes_[i];
+        auto &path = paths_orbit_[i];
 
-        for (int j = state_idx_prev_ + 1; j <= state_idx_curr_; j++) {
-            const auto p1 = positionAt(j - 1, i);
-            const auto p2 = positionAt(j, i);
-
-            buffer_orbit_->Color({color.r, color.g, color.b, 0.4F});
-            buffer_orbit_->Line(p1, p2);
+        for (int j = state_idx_prev_; j <= state_idx_curr_; j++) {
+            const auto p = positionAt(j, i);
+            path->LineTo(p);
         }
     }
     state_idx_prev_ = state_idx_curr_;
