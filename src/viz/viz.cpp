@@ -12,12 +12,12 @@ namespace nbodysim {
 
 App::App(const std::vector<SimState> &states)
     : window_(glviskit::CreateWindow("N-Body Simulation", 800, 800)),
-      buffer_body_(glviskit::CreateRenderBuffer()),
-      buffer_orbit_(glviskit::CreateRenderBuffer()),
+      buffer_body_(glviskit::CreateRenderList()),
+      buffer_orbit_(glviskit::CreateRenderList()),
       time_start_(glviskit::GetTimeSeconds()) {
     // add render buffers to window
-    window_->AddRenderBuffer(buffer_body_);
-    window_->AddRenderBuffer(buffer_orbit_);
+    window_->AddRenderList(buffer_body_);
+    window_->AddRenderList(buffer_orbit_);
 
     // setup camera to a reasonable default position
     auto camera = window_->GetCamera();

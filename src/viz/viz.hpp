@@ -88,8 +88,8 @@ class App {
     float orbit_width_ = 3.0F;
 
     std::shared_ptr<glviskit::sdl::Window> window_;
-    std::shared_ptr<glviskit::RenderBuffer> buffer_body_;
-    std::shared_ptr<glviskit::RenderBuffer> buffer_orbit_;
+    std::shared_ptr<glviskit::RenderList> buffer_body_;
+    std::shared_ptr<glviskit::RenderList> buffer_orbit_;
     float time_start_ = 0.0F;
 };
 
