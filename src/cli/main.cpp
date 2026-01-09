@@ -181,7 +181,9 @@ auto main(int argc, char **argv) -> int {
         nb::saveSimStateToCSV(states, args.output);
     }
 
-    nb::viz::visualizeSimulation(states, 1.0F);
+    spdlog::info("Starting visualization...");
+    nb::App app(states);
+    app.run();
 
     return 0;
 }
