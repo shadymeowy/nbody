@@ -4,27 +4,33 @@
 #include <cstddef>
 #include <glm/glm.hpp>
 #include <glviskit/glviskit.hpp>
+#include <memory>
 
 #include "common/constants.hpp"
 #include "common/vec.hpp"
 
+namespace viz = glviskit;
+
 namespace nbodysim {
 
 App::App(const std::vector<SimState> &states)
-    : window_(glviskit::CreateWindow("N-Body Simulation", 800, 800)),
-      buffer_body_(glviskit::CreateRenderList()),
-      buffer_orbit_(glviskit::CreateRenderList()),
-      time_start_(glviskit::GetTimeSeconds()) {
+    : window_(viz::CreateWindow("N-Body Simulation", 800, 800)),
+      list_body_(viz::CreateRenderList()),
+      list_orbit_(viz::CreateRenderList()),
+      time_start_(viz::GetTimeSeconds()) {
     // add render buffers to window
-    window_->AddRenderList(buffer_body_);
-    window_->AddRenderList(buffer_orbit_);
+    window_->AddRenderList(list_body_);
+    window_->AddRenderList(list_orbit_);
 
     // setup camera to a reasonable default position
     auto camera = window_->GetCamera();
     camera->SetPosition({0.0F, 0.0F, 0.0F});
-    camera->PerspectiveFov(60.0F, 60.0F, 0.1F, 100.0F);
+    camera->PerspectiveFov(60.0F, 60.0F, 0.1F, 1000.0F);
     camera->SetRotation({-0.6F, 0.0F, 0.0F});
     camera->SetDistance(35.0F);
+
+    auto controller = std::make_shared<viz::SphericalController>();
+    window_->SetController(controller);
 
     // if no states or no bodies, return
     if (states.empty() || states[0].bodies.empty()) {
@@ -32,7 +38,7 @@ App::App(const std::vector<SimState> &states)
     }
 
     // initialize data from simulation states
-    auto t0 = glviskit::GetTimeSeconds();
+    auto t0 = viz::GetTimeSeconds();
     body_count_ = states[0].bodies.size();
     state_count_ = states.size();
 
@@ -88,7 +94,7 @@ App::App(const std::vector<SimState> &states)
     for (size_t i = 0; i < body_count_; i++) {
         auto &color = colors_[i];
         auto &size = sizes_[i];
-        auto path = buffer_orbit_->PathBegin();
+        auto path = list_orbit_->PathBegin();
 
         path->Size(orbit_width_);
         path->Color({color.r, color.g, color.b, 0.4F});
@@ -97,7 +103,9 @@ App::App(const std::vector<SimState> &states)
 
     // save orbit path state so we can restore if
     // simulation visualization restarts
-    buffer_orbit_->Save();
+    list_orbit_->Save();
+    // disable orbit rendering by default
+    list_orbit_->SetEnabled(false);
 
     // setup time parameters
     // they are used for interpolation during rendering
@@ -136,34 +144,34 @@ auto App::positionInterpolate(size_t body_idx, float t) -> glm::vec3 {
 
 void App::run() {
     // main loop
-    while (glviskit::Loop()) {
+    while (viz::Loop()) {
         draw();
     }
 }
 
 void App::draw() {
     // current sim acquire time
-    auto t = glviskit::GetTimeSeconds() - time_start_;
+    auto t = viz::GetTimeSeconds() - time_start_;
     auto t_sim = t * speed_factor_;
 
     // if simulation time exceeds total time, wrap around
     if (t_sim > total_time_) {
         t_sim = std::fmodf(t_sim, total_time_);
-        time_start_ = glviskit::GetTimeSeconds();
+        time_start_ = viz::GetTimeSeconds();
         state_idx_prev_ = 0;
         state_idx_curr_ = 0;
         // since we are not clearing orbit buffer but append continually
         // we need to clear it when restarting simulation visualization
-        buffer_orbit_->Restore();
+        list_orbit_->Restore();
     }
 
     // draw bodies with trails
     // since using prev frame info not really feasible
     // we are removing old body and trail
-    buffer_body_->Clear();
+    list_body_->Clear();
 
     // loop over bodies and states
-    auto path = buffer_body_->PathBegin();
+    auto path = list_body_->PathBegin();
     for (size_t i = 0; i < body_count_; i++) {
         auto &color = colors_[i];
         auto &size = sizes_[i];
@@ -185,9 +193,9 @@ void App::draw() {
         // draw current body position
         // again by interpolation for smooth animation
         auto p = positionInterpolate(i, t_sim);
-        buffer_body_->Size(size);
-        buffer_body_->Color({color.r, color.g, color.b, 1.0F});
-        buffer_body_->Circle(p);
+        list_body_->Size(size);
+        list_body_->Color({color.r, color.g, color.b, 1.0F});
+        list_body_->Circle(p);
     }
 
     // update orbit trails
