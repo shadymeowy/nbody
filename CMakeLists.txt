@@ -111,18 +111,48 @@ if (OpenMP_CXX_FOUND)
     target_link_libraries(nbody_core PUBLIC OpenMP::OpenMP_CXX)
 endif()
 
-# find cli sources
-file(GLOB SOURCES_CLI CONFIGURE_DEPENDS 
-    "src/cli/*.cpp"
+# create args parser library
+file(GLOB SOURCES_ARGS CONFIGURE_DEPENDS 
+    "src/args/*.cpp"
 )
+add_library(nbody_args STATIC ${SOURCES_ARGS})
+# add include directories for args parser library
+target_include_directories(nbody_args PUBLIC 
+    "${CMAKE_CURRENT_SOURCE_DIR}/include"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src"
+)
+# link CLI11 to args parser library
+target_link_libraries(nbody_args PUBLIC 
+    CLI11::CLI11
+    spdlog::spdlog
+)
+
 # create the main executable for the nbody simulator
-add_executable(nbody ${SOURCES_CLI})
+add_executable(nbody
+    "src/cli/cli.cpp"
+)
 # link core library to main executable
 target_link_libraries(nbody PRIVATE
     nbody_core
-    CLI11::CLI11
+    nbody_args
     indicators::indicators
 )
+
+# check for emscripten and set specific options
+if(EMSCRIPTEN)
+    # use emscipten main file
+    target_sources(nbody PRIVATE "src/cli/main_web.cpp")
+    set_target_properties(nbody PROPERTIES SUFFIX ".html")
+    target_link_options(nbody PRIVATE
+        "-sWASM=1"
+        "-sALLOW_MEMORY_GROWTH=1"
+        "--shell-file" "${CMAKE_CURRENT_SOURCE_DIR}/web/shell_minimal.html"
+        "-sFORCE_FILESYSTEM=1"
+    )
+else()
+    # use standard main file
+    target_sources(nbody PRIVATE "src/cli/main.cpp")
+endif()
 
 # enable testing module
 enable_testing()

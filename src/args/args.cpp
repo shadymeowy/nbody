@@ -71,7 +71,11 @@ auto Arguments::parse(int argc, char **argv) -> Arguments {
         ->capture_default_str();
 
     app.add_option("--csv_output", args.csv_output, "Output CSV file name");
-    app.add_option("--msgpack_output", args.msgpack_output, "Output MsgPack file name");
+    app.add_option("--msgpack_output", args.msgpack_output,
+                   "Output MsgPack file name");
+    app.add_option("--csv_input", args.csv_input, "Input CSV file name");
+    app.add_option("--msgpack_input", args.msgpack_input,
+                   "Input MsgPack file name");
 
     // visualization options
     app.add_flag("--viz", args.viz.enable, "Enable visualization");
@@ -143,8 +147,14 @@ auto Arguments::print() const -> void {
     spdlog::info("  Zero Momentum: {}", (nozmom ? "Disabled" : "Enabled"));
     spdlog::info("  Number of Bodies: {}", num_bodies);
     spdlog::info("  Seed: {}", seed);
-    spdlog::info("  Output CSV File: {}", (csv_output.empty() ? "None" : csv_output));
-    spdlog::info("  Output MsgPack File: {}", (msgpack_output.empty() ? "None" : msgpack_output));
+    spdlog::info("  Output CSV File: {}",
+                 (csv_output.empty() ? "None" : csv_output));
+    spdlog::info("  Output MsgPack File: {}",
+                 (msgpack_output.empty() ? "None" : msgpack_output));
+    spdlog::info("  Input CSV File: {}",
+                 (csv_input.empty() ? "None" : csv_input));
+    spdlog::info("  Input MsgPack File: {}",
+                 (msgpack_input.empty() ? "None" : msgpack_input));
     spdlog::info("  Visualization: {}", (viz.enable ? "Enabled" : "Disabled"));
     if (viz.enable) {
         spdlog::info("    Show Orbits: {}", (viz.show_orbits ? "Yes" : "No"));

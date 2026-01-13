@@ -13,7 +13,7 @@ namespace viz = glviskit;
 
 namespace nbodysim {
 
-App::App(const SimResult &result)
+VizApp::VizApp(const SimResult &result)
     : window_(viz::CreateWindow("N-Body Simulation", 800, 800)),
       list_body_(viz::CreateRenderList()),
       list_orbit_(viz::CreateRenderList()),
@@ -118,7 +118,7 @@ App::App(const SimResult &result)
     dt_ = total_time_ / static_cast<float>(state_count_ - 1);
 }
 
-auto App::positionInterpolate(size_t body_idx, float t) -> glm::vec3 {
+auto VizApp::positionInterpolate(size_t body_idx, float t) -> glm::vec3 {
     // handle edge cases
     if (state_count_ == 0) {
         return {0.0F, 0.0F, 0.0F};
@@ -145,14 +145,14 @@ auto App::positionInterpolate(size_t body_idx, float t) -> glm::vec3 {
             p0.z * (1.0F - alpha) + p1.z * alpha};
 }
 
-void App::run() {
+void VizApp::run() {
     // main loop
     while (viz::Loop()) {
         draw();
     }
 }
 
-void App::draw() {
+void VizApp::draw() {
     // current sim acquire time
     auto t = viz::GetTimeSeconds() - time_start_;
     auto t_sim = t * speed_factor_;

@@ -51,6 +51,10 @@ struct Arguments {
     std::string csv_output;
     // output msgpack file path
     std::string msgpack_output;
+    // input csv file path
+    std::string csv_input;
+    // input msgpack file path
+    std::string msgpack_input;
 
     // visualization parameters
     struct Viz {

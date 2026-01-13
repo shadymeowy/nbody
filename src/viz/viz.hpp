@@ -10,9 +10,9 @@
 
 namespace nbodysim {
 
-class App {
+class VizApp {
    public:
-    explicit App(const SimResult &result);
+    explicit VizApp(const SimResult &result);
 
     void run();
     void draw();
