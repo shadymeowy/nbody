@@ -12,7 +12,7 @@ namespace nbodysim {
 
 class App {
    public:
-    explicit App(const std::vector<SimState> &states);
+    explicit App(const SimResult &result);
 
     void run();
     void draw();

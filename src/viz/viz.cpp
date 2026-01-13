@@ -13,11 +13,14 @@ namespace viz = glviskit;
 
 namespace nbodysim {
 
-App::App(const std::vector<SimState> &states)
+App::App(const SimResult &result)
     : window_(viz::CreateWindow("N-Body Simulation", 800, 800)),
       list_body_(viz::CreateRenderList()),
       list_orbit_(viz::CreateRenderList()),
       time_start_(viz::GetTimeSeconds()) {
+    // get states reference for convenience
+    const auto &states = result.states;
+
     // add render buffers to window
     window_->AddRenderList(list_body_);
     window_->AddRenderList(list_orbit_);

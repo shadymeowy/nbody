@@ -61,6 +61,18 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(glviskit)
 
+# disable msgpack tests and examples to avoid unnecessary 
+set(MSGPACK_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(MSGPACK_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(MSGPACK_USE_BOOST OFF CACHE BOOL "" FORCE)
+
+# fetch msgpack-cxx
+FetchContent_Declare(msgpack_cxx
+  GIT_REPOSITORY https://github.com/msgpack/msgpack-c.git
+  GIT_TAG        cpp-7.0.0
+  GIT_SHALLOW    TRUE
+)
+
 # if supported, use faster compilation flags
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     add_compile_options(-O3 -flto)

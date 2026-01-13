@@ -22,7 +22,7 @@ namespace nbodysim {
 template <typename F, typename R>
 auto simulateYoshida(std::vector<Body> &bodies, size_t n_steps, double dt,
                      size_t output_interval, F &&f, R &&r)
-    -> std::vector<SimState> {
+    -> SimResult {
     // get number of bodies and steps
     const size_t num_bodies = bodies.size();
 
@@ -92,7 +92,7 @@ auto simulateYoshida(std::vector<Body> &bodies, size_t n_steps, double dt,
     }
 
     // return recorded states with RVO
-    return states;
+    return SimResult{states};
 }
 
 }  // namespace nbodysim

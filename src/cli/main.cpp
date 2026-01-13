@@ -97,7 +97,7 @@ auto main(int argc, char **argv) -> int {
     auto start = std::chrono::high_resolution_clock::now();
 
     // simulation states to save
-    std::vector<nb::SimState> states;
+    nb::SimResult result;
 
     // get selected space strategy
     // note that we are only calling this once per simulation step
@@ -139,19 +139,19 @@ auto main(int argc, char **argv) -> int {
     // run selected integrator
     switch (args.integrator) {
         case nb::Arguments::Integrator::EULER: {
-            states = nb::simulateEuler(bodies, n_steps, args.timestep,
+            result = nb::simulateEuler(bodies, n_steps, args.timestep,
                                        output_interval, space_strategy,
                                        progress_updater);
             break;
         }
         case nb::Arguments::Integrator::VERLET: {
-            states = nb::simulateVerlet(bodies, n_steps, args.timestep,
+            result = nb::simulateVerlet(bodies, n_steps, args.timestep,
                                         output_interval, space_strategy,
                                         progress_updater);
             break;
         }
         case nb::Arguments::Integrator::YOSHIDA: {
-            states = nb::simulateYoshida(bodies, n_steps, args.timestep,
+            result = nb::simulateYoshida(bodies, n_steps, args.timestep,
                                          output_interval, space_strategy,
                                          progress_updater);
             break;
@@ -164,7 +164,7 @@ auto main(int argc, char **argv) -> int {
     // print elapsed time
     const std::chrono::duration<double> elapsed = end - start;
     spdlog::info("Simulation completed in {} seconds.", elapsed.count());
-    spdlog::info("Recorded {} simulation states.", states.size());
+    spdlog::info("Recorded {} simulation states.", result.states.size());
 
     // calculate final energy
     const double final_energy = nb::totalEnergy(bodies);
@@ -175,15 +175,21 @@ auto main(int argc, char **argv) -> int {
         std::abs((final_energy - initial_energy) / initial_energy) * 100.0;
     spdlog::info("Relative energy error (%): {:e}", rel_error);
 
-    // if output file is specified, save results
-    if (!args.output.empty()) {
-        spdlog::info("Saving results to {} ...", args.output);
-        nb::saveSimStateToCSV(states, args.output);
+    // if output csv file is specified, save results
+    if (!args.csv_output.empty() && args.csv_output != "") {
+        spdlog::info("Saving results to {} ...", args.csv_output);
+        nb::saveSimResultToCSV(result, args.csv_output);
+    }
+
+    // if output msgpack file is specified, save results
+    if (!args.msgpack_output.empty() && args.msgpack_output != "") {
+        spdlog::info("Saving results to {} ...", args.msgpack_output);
+        nb::saveSimResultToMsgPack(result, args.msgpack_output);
     }
 
     if (args.viz.enable) {
         spdlog::info("Starting visualization...");
-        nb::App app(states);
+        nb::App app(result);
 
         // set visualization parameters
         app.setShowOrbits(args.viz.show_orbits);

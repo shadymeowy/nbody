@@ -10,7 +10,8 @@ num_bodies = 16
 seed = 42
 
 # output
-output = "cluster.csv"
+csv_output = "cluster.csv"
+msgpack_output = "cluster.msgpack"
 
 # visualization
 viz = true

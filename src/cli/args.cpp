@@ -70,7 +70,8 @@ auto Arguments::parse(int argc, char **argv) -> Arguments {
     app.add_option("--seed", args.seed, "Random seed for reproducibility")
         ->capture_default_str();
 
-    app.add_option("--output", args.output, "Output file path (CSV)");
+    app.add_option("--csv_output", args.csv_output, "Output CSV file name");
+    app.add_option("--msgpack_output", args.msgpack_output, "Output MsgPack file name");
 
     // visualization options
     app.add_flag("--viz", args.viz.enable, "Enable visualization");
@@ -142,7 +143,19 @@ auto Arguments::print() const -> void {
     spdlog::info("  Zero Momentum: {}", (nozmom ? "Disabled" : "Enabled"));
     spdlog::info("  Number of Bodies: {}", num_bodies);
     spdlog::info("  Seed: {}", seed);
-    spdlog::info("  Output File: {}", (output.empty() ? "None" : output));
+    spdlog::info("  Output CSV File: {}", (csv_output.empty() ? "None" : csv_output));
+    spdlog::info("  Output MsgPack File: {}", (msgpack_output.empty() ? "None" : msgpack_output));
+    spdlog::info("  Visualization: {}", (viz.enable ? "Enabled" : "Disabled"));
+    if (viz.enable) {
+        spdlog::info("    Show Orbits: {}", (viz.show_orbits ? "Yes" : "No"));
+        spdlog::info("    Speed Factor: {}", viz.speed_factor);
+        spdlog::info("    Trail Length: {} years", viz.trail_length);
+        spdlog::info("    Trail Segments: {}", viz.trail_segments);
+        spdlog::info("    Size Scale: {}", viz.size_scale);
+        spdlog::info("    Size Min: {}", viz.size_min);
+        spdlog::info("    Size Max: {}", viz.size_max);
+        spdlog::info("    Orbit Width: {}", viz.orbit_width);
+    }
     spdlog::info("-----------------------------");
 }
 

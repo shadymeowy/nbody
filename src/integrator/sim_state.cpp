@@ -13,8 +13,7 @@ namespace nbodysim {
 // save to csv
 // format:
 // time, body_id, pos_x, pos_y, pos_z, vel_x, vel_y, vel_z
-void saveSimStateToCSV(const std::vector<SimState> &states,
-                       const std::string &filename) {
+void saveSimResultToCSV(const SimResult &results, const std::string &filename) {
     // open file
     std::ofstream file(filename);
     if (!file.is_open()) {
@@ -25,7 +24,7 @@ void saveSimStateToCSV(const std::vector<SimState> &states,
     file << "time, body_id, mass, pos_x, pos_y, pos_z, vel_x, vel_y, vel_z\n";
 
     // write data
-    for (const auto &entry : states) {
+    for (const auto &entry : results.states) {
         const double time = entry.time;
         const auto &bodies = entry.bodies;
         for (size_t i = 0; i < bodies.size(); i++) {
@@ -36,6 +35,49 @@ void saveSimStateToCSV(const std::vector<SimState> &states,
                  << body.vel.v[1] << ", " << body.vel.v[2] << "\n";
         }
     }
+}
+
+void saveSimResultToMsgPack(const SimResult &states,
+                            const std::string &filename) {
+    // open file
+    std::ofstream file(filename, std::ios::binary);
+    if (!file.is_open()) {
+        throw std::runtime_error("Could not open file: " + filename);
+    }
+
+    // pack data
+    msgpack::pack(file, states);
+
+    file.close();
+}
+
+auto loadSimResultFromMsgPack(const std::string &filename) -> SimResult {
+    // open file
+    std::ifstream file(filename, std::ios::binary);
+    if (!file.is_open()) {
+        throw std::runtime_error("Could not open file: " + filename);
+    }
+
+    // seek to end to get size
+    file.seekg(0, std::ios::end);
+    size_t fileSize = file.tellg();
+    file.seekg(0, std::ios::beg);
+
+    // read file into buffer
+    std::vector<char> buffer(fileSize);
+    if (!file.read(buffer.data(), fileSize)) {
+        throw std::runtime_error("Failed to read file: " + filename);
+    }
+
+    // unpack data
+    msgpack::object_handle oh = msgpack::unpack(buffer.data(), fileSize);
+    msgpack::object obj = oh.get();
+
+    // convert to SimResult
+    SimResult result;
+    obj.convert(result);
+
+    return result;
 }
 
 }  // namespace nbodysim

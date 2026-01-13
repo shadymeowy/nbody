@@ -47,8 +47,10 @@ struct Arguments {
     size_t num_bodies = 16;
     // random seed for reproducibility
     uint32_t seed = 42;
-    // output file path
-    std::string output;
+    // output csv file path
+    std::string csv_output;
+    // output msgpack file path
+    std::string msgpack_output;
 
     // visualization parameters
     struct Viz {

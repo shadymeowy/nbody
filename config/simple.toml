@@ -10,7 +10,8 @@ nozmom = false
 # seed = 42
 
 # output 
-output = "simple.csv"
+csv_output = "simple.csv"
+msgpack_output = "simple.msgpack"
 
 # visualization
 viz = true

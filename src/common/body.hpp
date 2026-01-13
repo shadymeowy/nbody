@@ -5,6 +5,7 @@
 // does not do anything fancy
 
 #include <iostream>
+#include <msgpack.hpp>
 
 #include "common/vec.hpp"
 
@@ -18,11 +19,16 @@ struct Body {
     double mass{0.0};
 
     // io for debugging
-    friend auto operator<<(std::ostream &os, const Body &body) -> std::ostream & {
+    friend auto operator<<(std::ostream &os, const Body &body)
+        -> std::ostream & {
         os << "Body(pos=" << body.pos << ", vel=" << body.vel
            << ", acc=" << body.acc << ", mass=" << body.mass << ")";
         return os;
     }
+
+    // msgpack definition
+    // this is not changing memory layout nor used for simulation itself
+    MSGPACK_DEFINE(pos, vel, acc, mass);
 };
 
 }  // namespace nbodysim
