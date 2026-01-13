@@ -49,10 +49,74 @@
         var canvasElement = document.getElementById('canvas');
         var loadingElement = document.getElementById('loading');
 
+        // parse url query parameters
+        const params = new URLSearchParams(window.location.search);
+
+        // convert query parameters to command line arguments
+        function queryToArgs() {
+            const args = [];
+
+            for (const [rawKey, rawVal] of params.entries()) {
+                const key = rawKey.startsWith("-") ? rawKey : `--${rawKey}`;
+
+                if (rawVal === "") {
+                    args.push(key);
+                } else {
+                    args.push(key, rawVal);
+                }
+            }
+            return args;
+        }
+
+        // get msgpack_input so we can preload it
+        var msgpackInput = params.get("msgpack_input");
+        var hasMsgpackInput = msgpackInput !== null && msgpackInput !== "";
+        // csv_input
+        var csvInput = params.get("csv_input");
+        var hasCsvInput = csvInput !== null && csvInput !== "";
+
         var Module = {
             canvas: canvasElement,
             print: (text) => console.log(text),
             printErr: (text) => console.error(text),
+            arguments: queryToArgs(),
+            preRun: [
+                () => {
+                    Module.setStatus('Downloading dataset...');
+
+                    if (hasMsgpackInput) {
+                        FS.createPreloadedFile(
+                            '/',
+                            msgpackInput,
+                            msgpackInput,
+                            true,
+                            false,
+                            () => {
+                                console.log(`Preloaded ${filename} from ${url}`);
+                            },
+                            (err) => {
+                                console.error(`Failed to preload ${filename} from ${url}: ${err}`);
+                            }
+                        );
+                    }
+
+                    if (hasCsvInput) {
+                        FS.createPreloadedFile(
+                            '/',
+                            csvInput,
+                            csvInput,
+                            true,
+                            false,
+                            () => {
+                                console.log(`Preloaded ${filename} from ${url}`);
+                            },
+                            (err) => {
+                                console.error(`Failed to preload ${filename} from ${url}: ${err}`);
+                            }
+                        );
+                    }
+                }
+            ],
             onRuntimeInitialized: () => {
                 loadingElement.style.display = 'none';
                 canvasElement.focus();
