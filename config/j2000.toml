@@ -1,10 +1,24 @@
+# simulation
 strategy = "brute_force"
 scenario = "j2000"
 integrator = "yoshida"
-duration = 250
+duration = 1000
 timestep = 1e-1
 output_interval = 1e-1
 nozmom = false
 # num_bodies = 0
 # seed = 42
+
+# output 
 output = "j2000.csv"
+
+# visualization
+viz = true
+viz_show_orbits = true
+viz_speed_factor = 10.0
+viz_trail_length = 1.0
+viz_trail_segments = 10
+viz_size_scale = 300.0
+viz_size_min = 2.0
+viz_size_max = 32.0
+viz_orbit_width = 3.0

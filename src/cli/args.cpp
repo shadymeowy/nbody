@@ -78,6 +78,11 @@ auto Arguments::parse(int argc, char **argv) -> Arguments {
     app.add_flag("--viz_show_orbits", args.viz.show_orbits,
                  "Show orbits in visualization");
 
+    app.add_option("--viz_speed_factor", args.viz.speed_factor,
+                   "Speed factor in visualization")
+        ->check(CLI::PositiveNumber)
+        ->capture_default_str();
+
     app.add_option("--viz_trail_length", args.viz.trail_length,
                    "Trail length in visualization (years)")
         ->check(CLI::PositiveNumber)

@@ -187,6 +187,7 @@ auto main(int argc, char **argv) -> int {
 
         // set visualization parameters
         app.setShowOrbits(args.viz.show_orbits);
+        app.setSpeedFactor(args.viz.speed_factor);
         app.setTrailLength(args.viz.trail_length);
         app.setTrailSegments(args.viz.trail_segments);
         app.setSizeScale(args.viz.size_scale);
