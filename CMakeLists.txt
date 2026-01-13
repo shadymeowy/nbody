@@ -63,9 +63,7 @@ FetchContent_MakeAvailable(glviskit)
 
 # if supported, use faster compilation flags
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    add_compile_options(-O3 -march=native -flto)
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    add_compile_options(/O2 /GL)
+    add_compile_options(-O3 -flto)
 endif()
 
 # we will target modern c++
