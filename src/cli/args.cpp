@@ -72,6 +72,42 @@ auto Arguments::parse(int argc, char **argv) -> Arguments {
 
     app.add_option("--output", args.output, "Output file path (CSV)");
 
+    // visualization options
+    app.add_flag("--viz", args.viz.enable, "Enable visualization");
+
+    app.add_flag("--viz_show_orbits", args.viz.show_orbits,
+                 "Show orbits in visualization");
+
+    app.add_option("--viz_trail_length", args.viz.trail_length,
+                   "Trail length in visualization (years)")
+        ->check(CLI::PositiveNumber)
+        ->capture_default_str();
+
+    app.add_option("--viz_trail_segments", args.viz.trail_segments,
+                   "Number of trail segments in visualization")
+        ->check(CLI::PositiveNumber)
+        ->capture_default_str();
+
+    app.add_option("--viz_size_scale", args.viz.size_scale,
+                   "Size scaling factor in visualization")
+        ->check(CLI::PositiveNumber)
+        ->capture_default_str();
+
+    app.add_option("--viz_size_min", args.viz.size_min,
+                   "Minimum body size in visualization")
+        ->check(CLI::PositiveNumber)
+        ->capture_default_str();
+
+    app.add_option("--viz_size_max", args.viz.size_max,
+                   "Maximum body size in visualization")
+        ->check(CLI::PositiveNumber)
+        ->capture_default_str();
+
+    app.add_option("--viz_orbit_width", args.viz.orbit_width,
+                   "Orbit line width in visualization")
+        ->check(CLI::PositiveNumber)
+        ->capture_default_str();
+
     // configuration file option
     app.set_config("--config")
         ->description("Read settings from a file")

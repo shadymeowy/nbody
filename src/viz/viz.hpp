@@ -17,6 +17,14 @@ class App {
     void run();
     void draw();
 
+    void setShowOrbits(bool show_orbits) {
+        show_orbits_ = show_orbits;
+        list_orbit_->SetEnabled(show_orbits_);
+    }
+    auto getShowOrbits() const -> bool {
+        return show_orbits_;
+    }
+
     void setSpeedFactor(float speed_factor) {
         speed_factor_ = speed_factor;
     }
@@ -59,6 +67,13 @@ class App {
         return size_scale_;
     }
 
+    void setOrbitWidth(float orbit_width) {
+        orbit_width_ = orbit_width;
+    }
+    auto getOrbitWidth() const -> float {
+        return orbit_width_;
+    }
+
     auto &positionAt(size_t state_idx, size_t body_idx) {
         return positions_[body_idx * state_count_ + state_idx];
     }
@@ -80,6 +95,7 @@ class App {
     size_t state_idx_prev_ = 0;
     size_t state_idx_curr_ = 0;
 
+    bool show_orbits_ = false;
     float speed_factor_ = 1.0F;
     float trail_length_ = 1.0F;
     unsigned trail_segments_ = 10;

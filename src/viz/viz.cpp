@@ -104,8 +104,8 @@ App::App(const std::vector<SimState> &states)
     // save orbit path state so we can restore if
     // simulation visualization restarts
     list_orbit_->Save();
-    // disable orbit rendering by default
-    list_orbit_->SetEnabled(false);
+    // set initial orbit visibility
+    list_orbit_->SetEnabled(show_orbits_);
 
     // setup time parameters
     // they are used for interpolation during rendering

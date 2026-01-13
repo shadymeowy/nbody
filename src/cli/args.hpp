@@ -50,6 +50,28 @@ struct Arguments {
     // output file path
     std::string output;
 
+    // visualization parameters
+    struct Viz {
+        // enable visualization
+        bool enable = false;
+        // whether to show orbits
+        bool show_orbits = false;
+        // speed factor for visualization
+        float speed_factor = 1.0F;
+        // trail length in years
+        float trail_length = 1.0F;
+        // number of segments in trail
+        size_t trail_segments = 10;
+        // size scaling factor
+        float size_scale = 300.0F;
+        // minimum body size
+        float size_min = 2.0F;
+        // maximum body size
+        float size_max = 32.0F;
+        // orbit line width
+        float orbit_width = 3.0F;
+    } viz;
+
     // parse arguments from command line
     static auto parse(int argc, char **argv) -> Arguments;
 

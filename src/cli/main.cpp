@@ -181,9 +181,22 @@ auto main(int argc, char **argv) -> int {
         nb::saveSimStateToCSV(states, args.output);
     }
 
-    spdlog::info("Starting visualization...");
-    nb::App app(states);
-    app.run();
+    if (args.viz.enable) {
+        spdlog::info("Starting visualization...");
+        nb::App app(states);
+
+        // set visualization parameters
+        app.setShowOrbits(args.viz.show_orbits);
+        app.setTrailLength(args.viz.trail_length);
+        app.setTrailSegments(args.viz.trail_segments);
+        app.setSizeScale(args.viz.size_scale);
+        app.setSizeMin(args.viz.size_min);
+        app.setSizeMax(args.viz.size_max);
+        app.setOrbitWidth(args.viz.orbit_width);
+
+        app.run();
+        return 0;
+    }
 
     return 0;
 }
