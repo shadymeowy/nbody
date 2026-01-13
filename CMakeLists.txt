@@ -55,7 +55,9 @@ FetchContent_MakeAvailable(indicators)
 include(FetchContent)
 FetchContent_Declare(
     glviskit
-    SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../drawing3d-gl"
+    GIT_REPOSITORY https://github.com/shadymeowy/glviskit.git
+    GIT_TAG        79bc25bb66a466c2723d296b565392b11f867916
+    GIT_SHALLOW    FALSE
 )
 FetchContent_MakeAvailable(glviskit)
 
