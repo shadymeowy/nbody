@@ -3,8 +3,6 @@ This project is a simulation of an N-body system using Barnes-Hut algorithm for 
 
 <img src="assets/demo.gif" alt="Simulation demo" width="600"/>
 
-(Visualization using `utils/visualize.py` on a ring scenario with 1024 bodies given below)
-
 ## Features
 - Barnes-Hut algorithm using a octree structure for efficient force calculations
 - Brute-force method for comparison and validation
@@ -19,15 +17,13 @@ This project is a simulation of an N-body system using Barnes-Hut algorithm for 
 ## Requirements
 - Any C++20 compliant compiler
 - CMake 3.10 or higher
-- Python 3.8 >= for visualization (will be removed in next sprint)
-- OpenCV for video saving in visualization
 
 ## Building the Project
-1. Clone the repository for sprint1 branch:
+1. Clone the repository for sprint2 branch:
 ```bash
-git clone -b sprint1 https://gitlab.lrz.de/advprog2025/25.git
+git clone -b sprint2 https://gitlab.lrz.de/advprog2025/25.git
 # or use SSH
-git clone -b sprint1 git@gitlab.lrz.de:advprog2025/25.git
+git clone -b sprint2 git@gitlab.lrz.de:advprog2025/25.git
 cd 25
 ```
 2. Use cmake to build and test the project:
@@ -133,23 +129,3 @@ Prints the help message and exits.
 ```bash
 ./build/nbody --strategy OCTREE --timestep 1e-6 --scenario CLUSTER --output cluster_output.csv
 ```
-
-## Visualization
-Two different Python scripts are provided for visualization:
-- `utils/plot.py`: Plots static graphs of the simulation data, only requires matplotlib.
-- `utils/visualize.py`: Uses a real-time rendering window for dynamic visualization, requires Linux or MacOS, and OpenCV for video saving.
-
-For plotting static graphs:
-```bash
-python3 utils/plot.py j2000_output.csv
-```
-
-For real-time visualization:
-```bash
-python3 utils/visualize.py ring_output.csv
-```
-
-Using `visualize.py` is not straightforward, so we recommend using it for ring scenario given above. It is quite limited in functionality and platform support.
-In the next sprint, we will include a fully featured OpenGL 3.3 based visualizer for all platforms.
-
-`plot.py` is sufficient for basic analysis and visualization of any given results.
