@@ -3,15 +3,15 @@ strategy = "octree"
 scenario = "ring"
 integrator = "verlet"
 duration = 50
-timestep = 1e-2
-output_interval = 5e-1
+timestep = 1e-1
+output_interval = 1e-1
 nozmom = false
-num_bodies = 1024
+num_bodies = 64
 seed = 42
 
 # output 
-csv_output = "results/ring.csv"
-msgpack_output = "results/ring.msgpack"
+csv_output = "results/octree_viz.csv"
+msgpack_output = "results/octree_viz.msgpack"
 
 # visualization
 viz = true
@@ -24,6 +24,6 @@ viz_size_min = 8.0
 viz_size_max = 32.0
 viz_orbit_width = 3.0
 viz_camera_center = [0.0, 0.0, 0.0]
-viz_camera_distance = 35.0
-viz_camera_rotation = [-0.6, 0.0, 0.0]
-viz_show_octree = false
+viz_camera_distance = 45.0
+viz_camera_rotation = [-0.6, 0.5, 0.0]
+viz_show_octree = true

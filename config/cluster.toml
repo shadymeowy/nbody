@@ -26,3 +26,4 @@ viz_orbit_width = 3.0
 viz_camera_center = [0.0, 0.0, 0.0]
 viz_camera_distance = 35.0
 viz_camera_rotation = [-0.6, 0.0, 0.0]
+viz_show_octree = false
