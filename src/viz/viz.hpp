@@ -10,6 +10,12 @@
 #include "glviskit/sdl/window.hpp"
 #include "integrator/sim_state.hpp"
 
+// someone put a macro named CreateWindow somewhere
+// (looking at you, windows.h)
+#if defined(CreateWindow)
+#undef CreateWindow
+#endif
+
 namespace nbodysim {
 
 class VizApp {
