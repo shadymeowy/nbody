@@ -148,6 +148,7 @@ if(EMSCRIPTEN)
         "-sALLOW_MEMORY_GROWTH=1"
         "--shell-file" "${CMAKE_CURRENT_SOURCE_DIR}/web/shell_minimal.html"
         "-sFORCE_FILESYSTEM=1"
+        "-sASSERTIONS=1"
     )
 else()
     # use standard main file
