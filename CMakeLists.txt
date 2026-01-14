@@ -58,7 +58,7 @@ include(FetchContent)
 FetchContent_Declare(
     glviskit
     GIT_REPOSITORY https://github.com/shadymeowy/glviskit.git
-    GIT_TAG        79bc25bb66a466c2723d296b565392b11f867916
+    GIT_TAG        959c17a25f428c773ea038db53b928ba89ce956b
     GIT_SHALLOW    FALSE
 )
 FetchContent_MakeAvailable(glviskit)
