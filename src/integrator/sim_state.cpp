@@ -13,7 +13,7 @@ namespace nbodysim {
 // save to csv
 // format:
 // time, body_id, pos_x, pos_y, pos_z, vel_x, vel_y, vel_z
-void saveSimResultToCSV(const SimResult &results, const std::string &filename) {
+void SimResult::saveToCSV(const std::string &filename) const {
     // open file
     std::ofstream file(filename);
     if (!file.is_open()) {
@@ -24,7 +24,7 @@ void saveSimResultToCSV(const SimResult &results, const std::string &filename) {
     file << "time, body_id, mass, pos_x, pos_y, pos_z, vel_x, vel_y, vel_z\n";
 
     // write data
-    for (const auto &entry : results.states) {
+    for (const auto &entry : states) {
         const double time = entry.time;
         const auto &bodies = entry.bodies;
         for (size_t i = 0; i < bodies.size(); i++) {
@@ -38,7 +38,7 @@ void saveSimResultToCSV(const SimResult &results, const std::string &filename) {
 }
 
 // load from csv
-auto loadSimResultFromCSV(const std::string &filename) -> SimResult {
+auto SimResult::loadFromCSV(const std::string &filename) -> SimResult {
     // open file
     std::ifstream file(filename);
 
@@ -92,8 +92,7 @@ auto loadSimResultFromCSV(const std::string &filename) -> SimResult {
     return SimResult{states};
 }
 
-void saveSimResultToMsgPack(const SimResult &states,
-                            const std::string &filename) {
+void SimResult::saveToMsgPack(const std::string &filename) const {
     // open file
     std::ofstream file(filename, std::ios::binary);
     if (!file.is_open()) {
@@ -106,7 +105,7 @@ void saveSimResultToMsgPack(const SimResult &states,
     file.close();
 }
 
-auto loadSimResultFromMsgPack(const std::string &filename) -> SimResult {
+auto SimResult::loadFromMsgPack(const std::string &filename) -> SimResult {
     // open file
     std::ifstream file(filename, std::ios::binary);
     if (!file.is_open()) {

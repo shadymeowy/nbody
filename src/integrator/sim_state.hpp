@@ -29,20 +29,16 @@ struct SimState {
 struct SimResult {
     std::vector<SimState> states;
 
+    // csv methods
+    void saveToCSV(const std::string &filename) const;
+    static auto loadFromCSV(const std::string &filename) -> SimResult;
+
+    // msgpack methods
+    void saveToMsgPack(const std::string &filename) const;
+    static auto loadFromMsgPack(const std::string &filename) -> SimResult;
+
+    // msgpack definition
     MSGPACK_DEFINE(states);
 };
-
-// save to csv
-void saveSimResultToCSV(const SimResult &states, const std::string &filename);
-
-// load from csv
-auto loadSimResultFromCSV(const std::string &filename) -> SimResult;
-
-// save to msgpack binary
-void saveSimResultToMsgPack(const SimResult &states,
-                            const std::string &filename);
-
-// load from msgpack binary
-auto loadSimResultFromMsgPack(const std::string &filename) -> SimResult;
 
 }  // namespace nbodysim

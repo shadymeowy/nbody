@@ -37,11 +37,11 @@ CLIApp::CLIApp(int argc, char **argv) : args(nb::Arguments::parse(argc, argv)) {
     if (!args.msgpack_input.empty() && args.msgpack_input != "") {
         spdlog::info("Loading simulation states from {} ...",
                      args.msgpack_input);
-        result = nb::loadSimResultFromMsgPack(args.msgpack_input);
+        result = nb::SimResult::loadFromMsgPack(args.msgpack_input);
         spdlog::info("Loaded {} simulation states.", result.states.size());
     } else if (!args.csv_input.empty() && args.csv_input != "") {
         spdlog::info("Loading simulation states from {} ...", args.csv_input);
-        result = nb::loadSimResultFromCSV(args.csv_input);
+        result = nb::SimResult::loadFromCSV(args.csv_input);
         spdlog::info("Loaded {} simulation states.", result.states.size());
     } else {
         spdlog::info("No input file specified. Running new simulation.");
@@ -64,13 +64,13 @@ CLIApp::CLIApp(int argc, char **argv) : args(nb::Arguments::parse(argc, argv)) {
     // if output csv file is specified, save results
     if (!args.csv_output.empty() && args.csv_output != "") {
         spdlog::info("Saving results to {} ...", args.csv_output);
-        nb::saveSimResultToCSV(result, args.csv_output);
+        result.saveToCSV(args.csv_output);
     }
 
     // if output msgpack file is specified, save results
     if (!args.msgpack_output.empty() && args.msgpack_output != "") {
         spdlog::info("Saving results to {} ...", args.msgpack_output);
-        nb::saveSimResultToMsgPack(result, args.msgpack_output);
+        result.saveToMsgPack(args.msgpack_output);
     }
 
     if (args.viz.enable) {
