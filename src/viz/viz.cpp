@@ -220,7 +220,7 @@ void VizApp::draw() {
                 path->LineTo(p);
             }
         }
+        state_idx_prev_ = state_idx_curr_;
     }
-    state_idx_prev_ = state_idx_curr_;
 }
 }  // namespace nbodysim

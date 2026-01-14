@@ -20,6 +20,12 @@ class VizApp {
     void setShowOrbits(bool show_orbits) {
         show_orbits_ = show_orbits;
         list_orbit_->SetEnabled(show_orbits_);
+        if (!show_orbits_) {
+            // clear orbit paths when disabling
+            list_orbit_->Clear();
+            // rewind orbit path state
+            state_idx_prev_ = 0;
+        }
     }
     auto getShowOrbits() const -> bool {
         return show_orbits_;
