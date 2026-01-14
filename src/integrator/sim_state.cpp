@@ -128,7 +128,7 @@ void SimResult::saveToMsgPack(const std::string &filename) const {
     }
 
     // pack data
-    msgpack::pack(file, states);
+    msgpack::pack(file, *this);
 
     file.close();
 }
