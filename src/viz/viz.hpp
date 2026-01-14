@@ -1,10 +1,10 @@
 #pragma once
 
+#include <glm/fwd.hpp>
 #include <glm/glm.hpp>
 #include <glviskit/glviskit.hpp>
 #include <vector>
 
-#include "glm/fwd.hpp"
 #include "glviskit/render_list.hpp"
 #include "glviskit/sdl/window.hpp"
 #include "integrator/sim_state.hpp"
@@ -22,10 +22,8 @@ class VizApp {
         show_orbits_ = show_orbits;
         list_orbit_->SetEnabled(show_orbits_);
         if (!show_orbits_) {
-            // clear orbit paths when disabling
-            list_orbit_->Clear();
-            // rewind orbit path state
-            state_idx_prev_ = 0;
+            // if disabling orbits, need to reset orbit paths
+            setupOrbitPaths();
         }
     }
     auto getShowOrbits() const -> bool {
@@ -35,7 +33,7 @@ class VizApp {
     void setSpeedFactor(float speed_factor) {
         speed_factor_ = speed_factor;
     }
-    auto setSpeedFactor() const -> float {
+    auto getSpeedFactor() const -> float {
         return speed_factor_;
     }
 
@@ -54,28 +52,47 @@ class VizApp {
     }
 
     void setSizeMin(float size_min) {
+        bool changed = (size_min_ != size_min);
         size_min_ = size_min;
+        // we can tolerate false positives here
+        // since resetting sizes is not breaking anything
+        if (changed) {
+            setupVizParameters();
+        }
     }
     auto getSizeMin() const -> float {
         return size_min_;
     }
 
     void setSizeMax(float size_max) {
+        bool changed = (size_max_ != size_max);
         size_max_ = size_max;
+        // same as size_min
+        if (changed) {
+            setupVizParameters();
+        }
     }
     auto getSizeMax() const -> float {
         return size_max_;
     }
 
     void setSizeScale(float size_scale) {
+        bool changed = (size_scale_ != size_scale);
         size_scale_ = size_scale;
+        if (changed) {
+            setupVizParameters();
+        }
     }
     auto getSizeScale() const -> float {
         return size_scale_;
     }
 
     void setOrbitWidth(float orbit_width) {
+        bool changed = (orbit_width_ != orbit_width);
         orbit_width_ = orbit_width;
+        if (changed) {
+            setupOrbitPaths();
+        }
     }
     auto getOrbitWidth() const -> float {
         return orbit_width_;
@@ -127,6 +144,7 @@ class VizApp {
     std::vector<glm::vec3> positions_;
     std::vector<glm::vec4> colors_;
     std::vector<float> sizes_;
+    std::vector<float> masses_;
 
     float start_time_ = 0.0F;
     float stop_time_ = 0.0F;
@@ -149,6 +167,10 @@ class VizApp {
     std::shared_ptr<glviskit::RenderList> list_orbit_;
     std::vector<std::shared_ptr<glviskit::Path>> paths_orbit_;
     float time_start_ = 0.0F;
+
+    void setupVizParameters();
+    void setupOrbitPaths();
+    void setupSimResult(const SimResult &result);
 };
 
 }  // namespace nbodysim

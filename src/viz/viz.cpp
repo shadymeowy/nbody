@@ -40,16 +40,27 @@ VizApp::VizApp(const SimResult &result)
         return;
     }
 
+    // setup visualization parameters
+    setupSimResult(result);
+    // setup other viz parameters
+    setupVizParameters();
+    // setup orbit paths
+    setupOrbitPaths();
+}
+
+void VizApp::setupSimResult(const SimResult &result) {
+    const auto &states = result.states;
+
     // initialize data from simulation states
     auto t0 = viz::GetTimeSeconds();
     body_count_ = states[0].bodies.size();
     state_count_ = states.size();
 
     // reserve space
+    times_.clear();
     times_.reserve(state_count_);
+    positions_.clear();
     positions_.resize(body_count_ * state_count_);
-    colors_.reserve(body_count_);
-    sizes_.reserve(body_count_);
 
     // fill times and positions
     for (const auto &state : states) {
@@ -70,6 +81,30 @@ VizApp::VizApp(const SimResult &result)
         }
     }
 
+    // save masses for size calculation
+    masses_.clear();
+    masses_.reserve(body_count_);
+    for (const auto &body : states[0].bodies) {
+        masses_.push_back(static_cast<float>(body.mass));
+    }
+}
+
+void VizApp::setupVizParameters() {
+    // generate sizes and colors
+    colors_.clear();
+    colors_.reserve(body_count_);
+    sizes_.clear();
+    sizes_.reserve(body_count_);
+
+    // generate sizes based on cube root of mass
+    // while exact size scaling is arbitrary
+    // cube root gives a better visual distinction between masses
+    for (const auto &mass : masses_) {
+        auto size = static_cast<float>(std::cbrt(mass) * size_scale_);
+        size = std::clamp(size, size_min_, size_max_);
+        sizes_.push_back(size);
+    }
+
     // generate colors based on body index
     for (size_t i = 0; i < body_count_; i++) {
         const float hue =
@@ -83,20 +118,22 @@ VizApp::VizApp(const SimResult &result)
         const float b = std::fabs(std::sin(b_angle));
         colors_.emplace_back(r, g, b, 1.0F);
     }
+}
 
-    // generate sizes based on cube root of mass
-    // while exact size scaling is arbitrary
-    // cube root gives a better visual distinction between masses
-    for (const auto &body : states[0].bodies) {
-        auto size = static_cast<float>(std::cbrt(body.mass) * size_scale_);
-        size = std::clamp(size, size_min_, size_max_);
-        sizes_.push_back(size);
-    }
+void VizApp::setupOrbitPaths() {
+    // clear existing orbit paths
+    paths_orbit_.clear();
+
+    // clear orbit render list
+    list_orbit_->Clear();
+
+    // rewind state index trackers
+    state_idx_prev_ = 0;
+    state_idx_curr_ = 0;
 
     // insert paths into orbit buffer
     for (size_t i = 0; i < body_count_; i++) {
         auto &color = colors_[i];
-        auto &size = sizes_[i];
         auto path = list_orbit_->PathBegin();
 
         path->Size(orbit_width_);
@@ -211,8 +248,6 @@ void VizApp::draw() {
     // append new orbit segments
     if (show_orbits_) {
         for (size_t i = 0; i < body_count_; i++) {
-            auto &color = colors_[i];
-            auto &size = sizes_[i];
             auto &path = paths_orbit_[i];
 
             for (int j = state_idx_prev_; j <= state_idx_curr_; j++) {
