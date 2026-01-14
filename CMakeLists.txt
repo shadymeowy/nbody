@@ -128,7 +128,6 @@ target_link_libraries(nbody_args PUBLIC
     CLI11::CLI11
     spdlog::spdlog
     msgpack-cxx
-    glm
     glviskit::glviskit
 )
 
