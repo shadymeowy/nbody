@@ -46,6 +46,16 @@ Run the simulator via the `nbody` executable produced in `./build`:
 ./build/nbody [options]
 ```
 
+## Configuration
+
+All simulation parameters can be set via configuration files in the `config/` folder or overridden via command line arguments. Example configuration files include:
+- `config/simple.toml`: Simple test scenario with few bodies
+- `config/j2000.toml`: Solar system data based on NASA J2000 epoch
+- `config/ring.toml`: Ring scenario with many bodies in a ring formation
+- `config/cluster.toml`: Cluster scenario with bodies in a clustered formation
+
+Skipping details here, see `nbody --help` for all available options and details.
+
 ### Examples
 
 **Solar System (J2000) with brute-force strategy:**
