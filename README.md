@@ -115,17 +115,17 @@ Prints the help message and exits.
 **Solar System (J2000) with brute-force strategy:**
 
 ```bash
-./build/nbody --strategy BRUTE_FORCE --scenario J2000 --output j2000_output.csv
+./build/nbody --config config/j2000.toml --viz
 ```
 
 **Ring scenario with Verlet integrator (100 years, 1024 bodies, timestep 0.1 years):**
 
 ```bash
-./build/nbody --timestep 1e-1 --output ring_output.csv --integrator VERLET --scenario RING --duration 100 --num_bodies 1024
+./build/nbody --config config/ring.toml --viz
 ```
 
 **Cluster scenario using Barnes–Hut octree strategy:**
 
 ```bash
-./build/nbody --strategy OCTREE --timestep 1e-6 --scenario CLUSTER --output cluster_output.csv
+./build/nbody --config config/cluster.toml --viz
 ```
