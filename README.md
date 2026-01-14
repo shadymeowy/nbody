@@ -1,7 +1,7 @@
 # IN1503 - Advanced Programming (Group 25)
 This project is a simulation of an N-body system using Barnes-Hut algorithm for efficient computation of inverse square forces.
 
-<img src="assets/ring.gif" alt="Simulation demo" width="540"/>
+<img src="assets/ring.gif" alt="Simulation demo" width="540"/> <img src="assets/octree_viz.gif" alt="Viz demo" width="540"/>
 
 [Try it in your browser](https://shadymeowy.github.io/in1503-project-viz-website/?viz=&msgpack_input=ring.msgpack&config=ring.toml)
 
@@ -80,6 +80,7 @@ All simulation parameters can be set via configuration files in the `config/` fo
 - `config/j2000.toml`: Solar system data based on NASA J2000 epoch
 - `config/ring.toml`: Ring scenario with many bodies in a ring formation
 - `config/cluster.toml`: Cluster scenario with bodies in a clustered formation
+- `config/octree_viz.toml`: Octree visualization demo scenario, others can also enable octree viz by setting `viz_show_octree = true`
 
 Skipping details here, see `nbody --help` for all available options and details.
 
@@ -104,6 +105,10 @@ Skipping details here, see `nbody --help` for all available options and details.
 ```
 
 ## Gallery
+<img src="assets/octree_viz.gif" alt="Viz demo" width="540"/>
+
+Try me in your browser: [Octree Visualization](https://shadymeowy.github.io/in1503-project-viz-website/?viz=&config=octree_viz.toml&viz_show_octree=&output_interval=1e-1)
+
 <img src="assets/j2000.gif" alt="Viz demo" width="540"/>
 
 Try me in your browser: [J2000 Visualization](https://shadymeowy.github.io/in1503-project-viz-website/?viz=&msgpack_input=j2000.msgpack&config=j2000.toml)
