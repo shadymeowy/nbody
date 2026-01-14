@@ -2,6 +2,7 @@
 This project is a simulation of an N-body system using Barnes-Hut algorithm for efficient computation of inverse square forces.
 
 <img src="assets/ring.gif" alt="Simulation demo" width="900"/>
+
 [Try it in your browser](https://shadymeowy.github.io/in1503-project-viz-website/?viz=&msgpack_input=ring.msgpack&config=ring.toml)
 
 ## Features
