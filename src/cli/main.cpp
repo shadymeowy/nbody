@@ -6,10 +6,6 @@
 // it is the entry point of the program
 // but we are mostly skipping details here
 // so for details see other files
-//     for argument parsing, args.hpp and args.cpp
-//     for integrators, euler.hpp and verlet.hpp
-//     for strategies, brute_force.hpp and barnes_hut.hpp
-//     for scenarios, cluster.hpp and solar.hpp
 
 #include <spdlog/spdlog.h>
 
