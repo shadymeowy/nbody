@@ -52,6 +52,8 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(indicators)
 
 # fetch glviskit
+# build even if headless/no gui deps are found
+set(SDL_UNIX_CONSOLE_BUILD ON CACHE BOOL "" FORCE)
 include(FetchContent)
 FetchContent_Declare(
     glviskit
