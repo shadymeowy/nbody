@@ -91,7 +91,7 @@ auto Octree::cubeBounds(const std::vector<Body> &bodies, double padding)
     // ie bodies on the edge
     const double half_size = (max_size * 0.5) + padding;
 
-    return BCube{.center = center, .half_size = half_size};
+    return BCube{center, half_size};
 }
 
 auto Octree::insertChild(Node &node, const Body &body, int32_t body_idx,

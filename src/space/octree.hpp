@@ -10,6 +10,7 @@
 #include <array>
 #include <cassert>
 #include <cstdint>
+#include <msgpack.hpp>
 #include <vector>
 
 #include "common/body.hpp"
@@ -22,6 +23,12 @@ namespace nbodysim {
 struct BCube {
     Vec3 center{0.0, 0.0, 0.0};
     double half_size{0.0};
+
+    BCube() = default;
+    BCube(const Vec3 &c, double hs) : center(c), half_size(hs) {}
+
+    // msgpack definition
+    MSGPACK_DEFINE(center, half_size);
 };
 
 // node for octree
@@ -57,7 +64,12 @@ class Octree {
     }
 
     // expose nodes for testing and visualization
-    const std::vector<Node> &getNodes() const { return nodes_; }
+    const std::vector<Node> &getNodes() const {
+        return nodes_;
+    }
+
+    // build octree from bodies without calculating forces
+    void build(const std::vector<Body> &bodies);
 
    private:
     // storage for octree nodes
@@ -66,9 +78,6 @@ class Octree {
     std::vector<Node> nodes_;
     // barnes-hut theta parameter squared
     double theta2_{0.25};
-
-    // build octree from bodies
-    void build(const std::vector<Body> &bodies);
 
     // insert first body as root node of octree
     auto insertRoot(const std::vector<Body> &bodies, int32_t body_idx) -> void;

@@ -83,6 +83,8 @@ struct Arguments {
         float camera_distance = 5.0F;
         // camera rotation (pitch, yaw, roll)
         std::array<float, 3> camera_rotation = {0.0F, 0.0F, 0.0F};
+        // show octree
+        bool show_octree = false;
     } viz;
 
     // parse arguments from command line

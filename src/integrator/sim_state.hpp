@@ -10,20 +10,25 @@
 #include <vector>
 
 #include "common/body.hpp"
+#include "space/octree.hpp"
 
 namespace nbodysim {
 
 struct SimState {
     double time;
     std::vector<Body> bodies;
+    std::vector<std::vector<BCube>> octree_cubes;
 
     SimState() = default;
+    SimState(double t, const std::vector<Body> &bodies_,
+             const std::vector<std::vector<BCube>> &octree_cubes_)
+        : time(t), bodies(bodies_), octree_cubes(octree_cubes_) {}
     SimState(double t, const std::vector<Body> &bodies_)
-        : time(t), bodies(bodies_) {}
+        : time(t), bodies(bodies_), octree_cubes() {}
 
     // msgpack definition
     // this is not changing memory layout nor used for simulation itself
-    MSGPACK_DEFINE(time, bodies);
+    MSGPACK_DEFINE(time, bodies, octree_cubes);
 };
 
 struct SimResult {

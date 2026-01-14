@@ -135,6 +135,9 @@ auto Arguments::parse(int argc, char **argv) -> Arguments {
         ->type_size(3)
         ->capture_default_str();
 
+    app.add_flag("--viz_show_octree", args.viz.show_octree,
+                 "Show octree in visualization");
+
     // configuration file option
     app.set_config("--config")
         ->description("Read settings from a file")
@@ -182,6 +185,13 @@ auto Arguments::print() const -> void {
         spdlog::info("    Size Min: {}", viz.size_min);
         spdlog::info("    Size Max: {}", viz.size_max);
         spdlog::info("    Orbit Width: {}", viz.orbit_width);
+        spdlog::info("    Camera Center: ({}, {}, {})", viz.camera_center[0],
+                     viz.camera_center[1], viz.camera_center[2]);
+        spdlog::info("    Camera Distance: {}", viz.camera_distance);
+        spdlog::info("    Camera Rotation: ({}, {}, {})",
+                     viz.camera_rotation[0], viz.camera_rotation[1],
+                     viz.camera_rotation[2]);
+        spdlog::info("    Show Octree: {}", (viz.show_octree ? "Yes" : "No"));
     }
     spdlog::info("-----------------------------");
 }

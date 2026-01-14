@@ -17,6 +17,7 @@ VizApp::VizApp(const SimResult &result)
     : window_(viz::CreateWindow("N-Body Simulation", 800, 800)),
       list_body_(viz::CreateRenderList()),
       list_orbit_(viz::CreateRenderList()),
+      list_octree_(viz::CreateRenderList()),
       time_start_(viz::GetTimeSeconds()) {
     // get states reference for convenience
     const auto &states = result.states;
@@ -24,6 +25,7 @@ VizApp::VizApp(const SimResult &result)
     // add render buffers to window
     window_->AddRenderList(list_body_);
     window_->AddRenderList(list_orbit_);
+    window_->AddRenderList(list_octree_);
 
     // setup camera to a reasonable default position
     auto camera = window_->GetCamera();
@@ -86,6 +88,22 @@ void VizApp::setupSimResult(const SimResult &result) {
     masses_.reserve(body_count_);
     for (const auto &body : states[0].bodies) {
         masses_.push_back(static_cast<float>(body.mass));
+    }
+
+    // load octree cubes if available
+    for (const auto &state : states) {
+        std::vector<Cube> cubes;
+        for (const auto &cube : state.octree_cubes) {
+            for (const auto &bcube : cube) {
+                Cube c;
+                c.center = glm::vec3{static_cast<float>(bcube.center.v[0]),
+                                     static_cast<float>(bcube.center.v[2]),
+                                     static_cast<float>(bcube.center.v[1])};
+                c.half_size = static_cast<float>(bcube.half_size);
+                cubes.push_back(c);
+            }
+        }
+        octree_cubes_.push_back(cubes);
     }
 }
 
@@ -256,6 +274,53 @@ void VizApp::draw() {
             }
         }
         state_idx_prev_ = state_idx_curr_;
+    }
+
+    // draw octree if enabled
+    if (show_octree_) {
+        drawOctree(t_sim);
+    }
+}
+
+void VizApp::drawOctree(float t_sim) {
+    // draw octree cubes
+    list_octree_->Clear();
+
+    // find closest recorded state index
+    size_t state_idx = static_cast<size_t>((t_sim - start_time_) / dt_);
+    if (state_idx >= state_count_) {
+        state_idx = state_count_ - 1;
+    }
+
+    for (const auto &cube : octree_cubes_[state_idx]) {
+        list_octree_->Color({1.0F, 0.2F, 0.2F, 0.4F});
+        list_octree_->Size(2.0F);
+        std::array<glm::vec3, 8> corners;
+        const auto &c = cube.center;
+        const float hs = cube.half_size;
+
+        corners[0] = {c.x - hs, c.y - hs, c.z - hs};
+        corners[1] = {c.x + hs, c.y - hs, c.z - hs};
+        corners[2] = {c.x + hs, c.y + hs, c.z - hs};
+        corners[3] = {c.x - hs, c.y + hs, c.z - hs};
+        corners[4] = {c.x - hs, c.y - hs, c.z + hs};
+        corners[5] = {c.x + hs, c.y - hs, c.z + hs};
+        corners[6] = {c.x + hs, c.y + hs, c.z + hs};
+        corners[7] = {c.x - hs, c.y + hs, c.z + hs};
+
+        // draw edges
+        list_octree_->Line(corners[0], corners[1]);
+        list_octree_->Line(corners[1], corners[2]);
+        list_octree_->Line(corners[2], corners[3]);
+        list_octree_->Line(corners[3], corners[0]);
+        list_octree_->Line(corners[4], corners[5]);
+        list_octree_->Line(corners[5], corners[6]);
+        list_octree_->Line(corners[6], corners[7]);
+        list_octree_->Line(corners[7], corners[4]);
+        list_octree_->Line(corners[0], corners[4]);
+        list_octree_->Line(corners[1], corners[5]);
+        list_octree_->Line(corners[2], corners[6]);
+        list_octree_->Line(corners[3], corners[7]);
     }
 }
 }  // namespace nbodysim

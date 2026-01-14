@@ -89,6 +89,7 @@ CLIApp::CLIApp(int argc, char **argv) : args(nb::Arguments::parse(argc, argv)) {
         viz_app->setCameraCenter(args.viz.camera_center);
         viz_app->setCameraDistance(args.viz.camera_distance);
         viz_app->setCameraRotation(args.viz.camera_rotation);
+        viz_app->setShowOctree(args.viz.show_octree);
     }
 }
 
@@ -215,6 +216,20 @@ auto CLIApp::simulate() -> nb::SimResult {
     const std::chrono::duration<double> elapsed = end - start;
     spdlog::info("Simulation completed in {} seconds.", elapsed.count());
     spdlog::info("Recorded {} simulation states.", result.states.size());
+
+    if (args.strategy == nb::Arguments::Strategy::OCTREE) {
+        spdlog::info("Saving octree bounding cubes for each recorded state.");
+        // for each recorded state, build octree and save bounding cube
+        for (auto &state : result.states) {
+            nb::Octree octree{0.5};
+            octree.build(state.bodies);
+            std::vector<nb::BCube> cubes;
+            for (const auto &node : octree.getNodes()) {
+                cubes.push_back(node.cube);
+            }
+            state.octree_cubes.push_back(cubes);
+        }
+    }
 
     return result;
 }

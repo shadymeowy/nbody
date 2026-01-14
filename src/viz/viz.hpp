@@ -3,6 +3,7 @@
 #include <glm/fwd.hpp>
 #include <glm/glm.hpp>
 #include <glviskit/glviskit.hpp>
+#include <memory>
 #include <vector>
 
 #include "glviskit/render_list.hpp"
@@ -131,6 +132,13 @@ class VizApp {
         setCameraRotation(glm::vec3{rotation[0], rotation[1], rotation[2]});
     }
 
+    auto getShowOctree() const -> bool {
+        return show_octree_;
+    }
+    void setShowOctree(bool show_octree) {
+        show_octree_ = show_octree;
+    }
+
     auto &positionAt(size_t state_idx, size_t body_idx) {
         return positions_[body_idx * state_count_ + state_idx];
     }
@@ -138,6 +146,11 @@ class VizApp {
     auto positionInterpolate(size_t body_idx, float t) -> glm::vec3;
 
    private:
+    struct Cube {
+        glm::vec3 center;
+        float half_size;
+    };
+
     size_t body_count_ = 0;
     size_t state_count_ = 0;
     std::vector<float> times_;
@@ -145,6 +158,7 @@ class VizApp {
     std::vector<glm::vec4> colors_;
     std::vector<float> sizes_;
     std::vector<float> masses_;
+    std::vector<std::vector<Cube>> octree_cubes_;
 
     float start_time_ = 0.0F;
     float stop_time_ = 0.0F;
@@ -161,16 +175,19 @@ class VizApp {
     float size_max_ = 32.0F;
     float size_scale_ = 300.0F;
     float orbit_width_ = 3.0F;
+    bool show_octree_ = false;
 
     std::shared_ptr<glviskit::sdl::Window> window_;
     std::shared_ptr<glviskit::RenderList> list_body_;
     std::shared_ptr<glviskit::RenderList> list_orbit_;
+    std::shared_ptr<glviskit::RenderList> list_octree_;
     std::vector<std::shared_ptr<glviskit::Path>> paths_orbit_;
     float time_start_ = 0.0F;
 
     void setupVizParameters();
     void setupOrbitPaths();
     void setupSimResult(const SimResult &result);
+    void drawOctree(float t_sim);
 };
 
 }  // namespace nbodysim
