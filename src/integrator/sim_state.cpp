@@ -1,6 +1,7 @@
 #include "sim_state.hpp"
 
 #include <cstddef>
+#include <filesystem>
 #include <fstream>
 #include <stdexcept>
 #include <string>
@@ -10,10 +11,34 @@
 
 namespace nbodysim {
 
+void ensureDirectoryExists(const std::string &filepath) {
+    namespace fs = std::filesystem;
+
+    fs::path out_path(filepath);
+    fs::path dir = out_path.parent_path();
+
+    if (!dir.empty()) {
+        std::error_code ec;
+        if (!fs::exists(dir, ec)) {
+            if (!fs::create_directories(dir, ec)) {
+                throw std::runtime_error(
+                    "Could not create directory: " + dir.string() + " (" +
+                    ec.message() + ")");
+            }
+        } else if (!fs::is_directory(dir, ec)) {
+            throw std::runtime_error("Path exists but is not a directory: " +
+                                     dir.string());
+        }
+    }
+}
+
 // save to csv
 // format:
 // time, body_id, pos_x, pos_y, pos_z, vel_x, vel_y, vel_z
 void SimResult::saveToCSV(const std::string &filename) const {
+    // check folder exists
+    ensureDirectoryExists(filename);
+
     // open file
     std::ofstream file(filename);
     if (!file.is_open()) {
@@ -93,6 +118,9 @@ auto SimResult::loadFromCSV(const std::string &filename) -> SimResult {
 }
 
 void SimResult::saveToMsgPack(const std::string &filename) const {
+    // check folder exists
+    ensureDirectoryExists(filename);
+
     // open file
     std::ofstream file(filename, std::ios::binary);
     if (!file.is_open()) {
