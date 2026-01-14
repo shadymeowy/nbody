@@ -196,7 +196,7 @@ void VizApp::draw() {
 
     // if simulation time exceeds total time, wrap around
     if (t_sim > total_time_) {
-        t_sim = std::fmodf(t_sim, total_time_);
+        t_sim = std::fmod(t_sim, total_time_);
         time_start_ = viz::GetTimeSeconds();
         state_idx_prev_ = 0;
         state_idx_curr_ = 0;
@@ -225,7 +225,7 @@ void VizApp::draw() {
             const float t_trail = t_sim - (trail_length_ * alpha);
             const auto p = positionInterpolate(i, t_trail);
 
-            path->Color({color.r, color.g, color.b, std::expf(-3.0F * alpha)});
+            path->Color({color.r, color.g, color.b, std::exp(-3.0F * alpha)});
             path->LineTo(p);
         }
         path->LineEnd();
