@@ -1,7 +1,7 @@
 # IN1503 - Advanced Programming (Group 25)
 This project is a simulation of an N-body system using Barnes-Hut algorithm for efficient computation of inverse square forces.
 
-<img src="assets/ring.gif" alt="Simulation demo" width="900"/>
+<img src="assets/ring.gif" alt="Simulation demo" width="540"/>
 
 [Try it in your browser](https://shadymeowy.github.io/in1503-project-viz-website/?viz=&msgpack_input=ring.msgpack&config=ring.toml)
 
@@ -104,14 +104,16 @@ Skipping details here, see `nbody --help` for all available options and details.
 ```
 
 ## Gallery
-![Solar System (J2000)](assets/j2000.gif)
+<img src="assets/j2000.gif" alt="Viz demo" width="540"/>
 
 Try me in your browser: [J2000 Visualization](https://shadymeowy.github.io/in1503-project-viz-website/?viz=&msgpack_input=j2000.msgpack&config=j2000.toml)
 
-![Ring Scenario](assets/ring.gif)
+<img src="assets/ring.gif" alt="Viz demo" width="540"/>
+
 Try me in your browser: [Ring Visualization](https://shadymeowy.github.io/in1503-project-viz-website/?viz=&msgpack_input=ring.msgpack&config=ring.toml)
 
-![Simple Solar System](assets/simple.gif)
+<img src="assets/simple.gif" alt="Viz demo" width="540"/>
+
 Try me in your browser: [Simple Visualization](https://shadymeowy.github.io/in1503-project-viz-website/?viz=&msgpack_input=simple.msgpack&config=simple.toml)
 
 
