@@ -103,6 +103,18 @@ Skipping details here, see `nbody --help` for all available options and details.
 ./build/nbody --config config/cluster.toml --viz
 ```
 
+## Gallery
+![Solar System (J2000)](assets/j2000.gif)
+
+Try me in your browser: [J2000 Visualization](https://shadymeowy.github.io/in1503-project-viz-website/?viz=&msgpack_input=j2000.msgpack&config=j2000.toml)
+
+![Ring Scenario](assets/ring.gif)
+Try me in your browser: [Ring Visualization](https://shadymeowy.github.io/in1503-project-viz-website/?viz=&msgpack_input=ring.msgpack&config=ring.toml)
+
+![Simple Solar System](assets/simple.gif)
+Try me in your browser: [Simple Visualization](https://shadymeowy.github.io/in1503-project-viz-website/?viz=&msgpack_input=simple.msgpack&config=simple.toml)
+
+
 ## Requirements Checklist
 ### Sprint 1:
 - [x] Generate an array of initial masses, positions, and velocities of a system of bodies in 3D space.
