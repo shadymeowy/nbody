@@ -74,6 +74,9 @@
         // csv_input
         var csvInput = params.get("csv_input");
         var hasCsvInput = csvInput !== null && csvInput !== "";
+        // config
+        var configInput = params.get("config");
+        var hasConfigInput = configInput !== null && configInput !== "";
 
         var Module = {
             canvas: canvasElement,
@@ -92,10 +95,10 @@
                             true,
                             false,
                             () => {
-                                console.log(`Preloaded ${filename} from ${url}`);
+                                console.log(`Preloaded ${msgpackInput} from ${msgpackInput}`);
                             },
                             (err) => {
-                                console.error(`Failed to preload ${filename} from ${url}: ${err}`);
+                                console.error(`Failed to preload ${msgpackInput} from ${msgpackInput}: ${err}`);
                             }
                         );
                     }
@@ -108,10 +111,26 @@
                             true,
                             false,
                             () => {
-                                console.log(`Preloaded ${filename} from ${url}`);
+                                console.log(`Preloaded ${csvInput} from ${csvInput}`);
                             },
                             (err) => {
-                                console.error(`Failed to preload ${filename} from ${url}: ${err}`);
+                                console.error(`Failed to preload ${csvInput} from ${csvInput}: ${err}`);
+                            }
+                        );
+                    }
+
+                    if (hasConfigInput) {
+                        FS.createPreloadedFile(
+                            '/',
+                            configInput,
+                            configInput,
+                            true,
+                            false,
+                            () => {
+                                console.log(`Preloaded ${configInput} from ${configInput}`);
+                            },
+                            (err) => {
+                                console.error(`Failed to preload ${configInput} from ${configInput}: ${err}`);
                             }
                         );
                     }
