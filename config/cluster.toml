@@ -4,7 +4,7 @@ scenario = "cluster"
 integrator = "yoshida"
 duration = 100
 timestep = 1e-6
-output_interval = 1e-1
+output_interval = 5e-1
 nozmom = false
 num_bodies = 16
 seed = 42
@@ -15,11 +15,14 @@ msgpack_output = "cluster.msgpack"
 
 # visualization
 viz = true
-viz_show_orbits = false
+viz_show_orbits = true
 viz_speed_factor = 1.0
 viz_trail_length = 1.0
 viz_trail_segments = 10
-viz_size_scale = 300.0
-viz_size_min = 2.0
+viz_size_scale = 100.0
+viz_size_min = 8.0
 viz_size_max = 32.0
 viz_orbit_width = 3.0
+viz_camera_center = [0.0, 0.0, 0.0]
+viz_camera_distance = 35.0
+viz_camera_rotation = [-0.6, 0.0, 0.0]
