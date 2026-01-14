@@ -4,6 +4,7 @@
 #include <glviskit/glviskit.hpp>
 #include <vector>
 
+#include "glm/fwd.hpp"
 #include "glviskit/render_list.hpp"
 #include "glviskit/sdl/window.hpp"
 #include "integrator/sim_state.hpp"
@@ -78,6 +79,33 @@ class VizApp {
     }
     auto getOrbitWidth() const -> float {
         return orbit_width_;
+    }
+
+    auto getCameraCenter() -> const glm::vec3 {
+        const auto &camera = window_->GetCamera();
+        return camera->GetRotation();
+    }
+    void setCameraCenter(const glm::vec3 &center) {
+        const auto &camera = window_->GetCamera();
+        camera->SetRotation(center);
+    }
+
+    auto getCameraDistance() -> float {
+        const auto &camera = window_->GetCamera();
+        return camera->GetDistance();
+    }
+    void setCameraDistance(float distance) {
+        const auto &camera = window_->GetCamera();
+        camera->SetDistance(distance);
+    }
+
+    auto getCameraRotation() -> const glm::vec3 {
+        const auto &camera = window_->GetCamera();
+        return camera->GetRotation();
+    }
+    void setCameraRotation(const glm::vec3 &rotation) {
+        const auto &camera = window_->GetCamera();
+        camera->SetRotation(rotation);
     }
 
     auto &positionAt(size_t state_idx, size_t body_idx) {
