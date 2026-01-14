@@ -209,14 +209,16 @@ void VizApp::draw() {
     }
 
     // append new orbit segments
-    for (size_t i = 0; i < body_count_; i++) {
-        auto &color = colors_[i];
-        auto &size = sizes_[i];
-        auto &path = paths_orbit_[i];
+    if (show_orbits_) {
+        for (size_t i = 0; i < body_count_; i++) {
+            auto &color = colors_[i];
+            auto &size = sizes_[i];
+            auto &path = paths_orbit_[i];
 
-        for (int j = state_idx_prev_; j <= state_idx_curr_; j++) {
-            const auto p = positionAt(j, i);
-            path->LineTo(p);
+            for (int j = state_idx_prev_; j <= state_idx_curr_; j++) {
+                const auto p = positionAt(j, i);
+                path->LineTo(p);
+            }
         }
     }
     state_idx_prev_ = state_idx_curr_;
