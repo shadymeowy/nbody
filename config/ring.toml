@@ -10,8 +10,8 @@ num_bodies = 1024
 seed = 42
 
 # output 
-csv_output = "ring.csv"
-msgpack_output = "ring.msgpack"
+csv_output = "results/ring.csv"
+msgpack_output = "results/ring.msgpack"
 
 # visualization
 viz = true

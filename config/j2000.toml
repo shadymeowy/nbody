@@ -10,8 +10,8 @@ nozmom = false
 # seed = 42
 
 # output 
-csv_output = "j2000.csv"
-msgpack_output = "j2000.msgpack"
+csv_output = "results/j2000.csv"
+msgpack_output = "results/j2000.msgpack"
 
 # visualization
 viz = true
