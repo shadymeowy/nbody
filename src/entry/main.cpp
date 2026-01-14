@@ -9,7 +9,7 @@
 
 #include <spdlog/spdlog.h>
 
-#include "cli.hpp"
+#include "cliapp.hpp"
 
 auto main(int argc, char **argv) -> int {
     // create CLI application

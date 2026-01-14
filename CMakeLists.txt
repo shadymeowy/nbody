@@ -127,11 +127,14 @@ target_include_directories(nbody_args PUBLIC
 target_link_libraries(nbody_args PUBLIC 
     CLI11::CLI11
     spdlog::spdlog
+    msgpack-cxx
+    glm
+    glviskit::glviskit
 )
 
 # create the main executable for the nbody simulator
 add_executable(nbody
-    "src/cli/cli.cpp"
+    "src/entry/cliapp.cpp"
 )
 # link core library to main executable
 target_link_libraries(nbody PRIVATE
@@ -143,7 +146,7 @@ target_link_libraries(nbody PRIVATE
 # check for emscripten and set specific options
 if(EMSCRIPTEN)
     # use emscipten main file
-    target_sources(nbody PRIVATE "src/cli/main_web.cpp")
+    target_sources(nbody PRIVATE "src/entry/main_web.cpp")
     set_target_properties(nbody PROPERTIES SUFFIX ".html")
     target_link_options(nbody PRIVATE
         "-sWASM=1"
@@ -154,7 +157,7 @@ if(EMSCRIPTEN)
     )
 else()
     # use standard main file
-    target_sources(nbody PRIVATE "src/cli/main.cpp")
+    target_sources(nbody PRIVATE "src/entry/main.cpp")
 endif()
 
 # enable testing module

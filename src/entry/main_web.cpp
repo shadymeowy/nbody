@@ -7,7 +7,7 @@
 
 #include <memory>
 
-#include "cli.hpp"
+#include "cliapp.hpp"
 
 // shared state for SDL app
 // i know i know global state is bad
