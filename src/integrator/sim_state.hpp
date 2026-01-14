@@ -35,6 +35,9 @@ struct SimResult {
 // save to csv
 void saveSimResultToCSV(const SimResult &states, const std::string &filename);
 
+// load from csv
+auto loadSimResultFromCSV(const std::string &filename) -> SimResult;
+
 // save to msgpack binary
 void saveSimResultToMsgPack(const SimResult &states,
                             const std::string &filename);

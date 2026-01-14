@@ -37,6 +37,61 @@ void saveSimResultToCSV(const SimResult &results, const std::string &filename) {
     }
 }
 
+// load from csv
+auto loadSimResultFromCSV(const std::string &filename) -> SimResult {
+    // open file
+    std::ifstream file(filename);
+
+    // check if file opened successfully
+    if (!file.is_open()) {
+        throw std::runtime_error("Could not open file: " + filename);
+    }
+
+    std::string line;
+    // skip header
+    std::getline(file, line);
+
+    // allocate states
+    std::vector<SimState> states;
+    double current_time = 0.0;
+    std::vector<Body> bodies;
+
+    // read file line by line
+    while (std::getline(file, line)) {
+        std::istringstream ss(line);
+        Body body;
+        double time;
+        size_t body_id;
+        char comma;
+
+        // parse line using istringstream
+        ss >> time >> comma >> body_id >> comma >> body.mass >> comma >>
+            body.pos.v[0] >> comma >> body.pos.v[1] >> comma >> body.pos.v[2] >>
+            comma >> body.vel.v[0] >> comma >> body.vel.v[1] >> comma >>
+            body.vel.v[2];
+
+        // if time changes, this means we need to start a new SimState
+        if (time != current_time) {
+            if (!bodies.empty()) {
+                states.emplace_back(current_time, bodies);
+                bodies.clear();
+            }
+            current_time = time;
+        }
+
+        // add body to current list
+        bodies.push_back(body);
+    }
+
+    // push remaining bodies as last state
+    if (!bodies.empty()) {
+        states.emplace_back(current_time, bodies);
+    }
+
+    // return the result
+    return SimResult{states};
+}
+
 void saveSimResultToMsgPack(const SimResult &states,
                             const std::string &filename) {
     // open file

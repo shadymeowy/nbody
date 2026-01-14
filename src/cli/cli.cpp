@@ -40,8 +40,9 @@ CLIApp::CLIApp(int argc, char **argv) : args(nb::Arguments::parse(argc, argv)) {
         result = nb::loadSimResultFromMsgPack(args.msgpack_input);
         spdlog::info("Loaded {} simulation states.", result.states.size());
     } else if (!args.csv_input.empty() && args.csv_input != "") {
-        spdlog::error("CSV input not yet implemented. Exiting.");
-        std::exit(1);
+        spdlog::info("Loading simulation states from {} ...", args.csv_input);
+        result = nb::loadSimResultFromCSV(args.csv_input);
+        spdlog::info("Loaded {} simulation states.", result.states.size());
     } else {
         spdlog::info("No input file specified. Running new simulation.");
         result = simulate();
