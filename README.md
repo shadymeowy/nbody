@@ -40,6 +40,8 @@ cmake --build build -j8
 ctest --test-dir build --output-on-failure
 ```
 
+It is possible to build it to wasm via emscripten, which supports both visualization and running the simulation in browser. Takes CLI arguments via URL parameters.
+
 ## Usage
 
 Run the simulator via the `nbody` executable produced in `./build`:
@@ -47,6 +49,29 @@ Run the simulator via the `nbody` executable produced in `./build`:
 ```bash
 ./build/nbody [options]
 ```
+
+## Loading and Saving Simulations
+To save csv or msgpack output, use the `--csv_output` or `--msgpack_output` options as follows:
+
+```bash
+./build/nbody --config config/j2000.toml --csv_output myresult.csv --msgpack_output myresult.msgpack --viz
+```
+
+The configuration provided in `config/` enables both outputs to `results/` folder by default.
+
+You can load results from a msgpack file using the `--msgpack_input` option:
+
+```bash
+./build/nbody --msgpack_input results/j2000.msgpack --config config/j2000.toml --viz
+```
+
+Same as csv,
+
+```bash
+./build/nbody --csv_input results/j2000.csv --config config/j2000.toml --viz
+```
+
+When `csv_input` or `msgpack_input` is provided, the simulation will skip the computation and directly load the results for visualization. Configuration parameters will still be applied for visualization settings.
 
 ## Configuration
 
