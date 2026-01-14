@@ -31,11 +31,11 @@ auto Octree::calculateForces(std::vector<Body> &bodies, bool reset) -> void {
 #ifdef _OPENMP
 #pragma omp parallel for schedule(dynamic)
 #endif
-    for (size_t i = 0; i < bodies.size(); ++i) {
+    for (int i = 0; i < bodies.size(); ++i) {
         // reset acceleration
         bodies[i].acc = {0.0, 0.0, 0.0};
         // calculate force recursively
-        calculateForceOnBody(bodies, static_cast<int32_t>(i), 0, theta2_);
+        calculateForceOnBody(bodies, i, 0, theta2_);
     }
 }
 
