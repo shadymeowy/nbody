@@ -89,6 +89,9 @@ class VizApp {
         const auto &camera = window_->GetCamera();
         camera->SetRotation(center);
     }
+    void setCameraCenter(const std::array<float, 3> &center) {
+        setCameraCenter(glm::vec3{center[0], center[1], center[2]});
+    }
 
     auto getCameraDistance() -> float {
         const auto &camera = window_->GetCamera();
@@ -106,6 +109,9 @@ class VizApp {
     void setCameraRotation(const glm::vec3 &rotation) {
         const auto &camera = window_->GetCamera();
         camera->SetRotation(rotation);
+    }
+    void setCameraRotation(const std::array<float, 3> &rotation) {
+        setCameraRotation(glm::vec3{rotation[0], rotation[1], rotation[2]});
     }
 
     auto &positionAt(size_t state_idx, size_t body_idx) {

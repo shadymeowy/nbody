@@ -118,6 +118,23 @@ auto Arguments::parse(int argc, char **argv) -> Arguments {
         ->check(CLI::PositiveNumber)
         ->capture_default_str();
 
+    app.add_option("--viz_camera_center", args.viz.camera_center,
+                   "Camera center position in visualization (x,y,z)")
+        ->expected(1)
+        ->type_size(3)
+        ->capture_default_str();
+
+    app.add_option("--viz_camera_distance", args.viz.camera_distance,
+                   "Camera distance in visualization")
+        ->check(CLI::PositiveNumber)
+        ->capture_default_str();
+
+    app.add_option("--viz_camera_rotation", args.viz.camera_rotation,
+                   "Camera rotation (pitch,yaw,roll) in visualization")
+        ->expected(1)
+        ->type_size(3)
+        ->capture_default_str();
+
     // configuration file option
     app.set_config("--config")
         ->description("Read settings from a file")

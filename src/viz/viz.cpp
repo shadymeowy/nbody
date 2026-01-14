@@ -29,8 +29,8 @@ VizApp::VizApp(const SimResult &result)
     auto camera = window_->GetCamera();
     camera->SetPosition({0.0F, 0.0F, 0.0F});
     camera->PerspectiveFov(60.0F, 60.0F, 0.1F, 1000.0F);
-    camera->SetRotation({-0.6F, 0.0F, 0.0F});
-    camera->SetDistance(35.0F);
+    camera->SetRotation({0.0F, 0.0F, 0.0F});
+    camera->SetDistance(0.0F);
 
     auto controller = std::make_shared<viz::SphericalController>();
     window_->SetController(controller);

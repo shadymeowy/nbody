@@ -5,6 +5,7 @@
 
 #include <spdlog/spdlog.h>
 
+#include <array>
 #include <cstddef>
 #include <cstdint>
 #include <iostream>
@@ -76,6 +77,12 @@ struct Arguments {
         float size_max = 32.0F;
         // orbit line width
         float orbit_width = 3.0F;
+        // camera center position
+        std::array<float, 3> camera_center = {0.0F, 0.0F, 0.0F};
+        // camera distance
+        float camera_distance = 5.0F;
+        // camera rotation (pitch, yaw, roll)
+        std::array<float, 3> camera_rotation = {0.0F, 0.0F, 0.0F};
     } viz;
 
     // parse arguments from command line

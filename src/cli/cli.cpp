@@ -86,6 +86,9 @@ CLIApp::CLIApp(int argc, char **argv) : args(nb::Arguments::parse(argc, argv)) {
         viz_app->setSizeMin(args.viz.size_min);
         viz_app->setSizeMax(args.viz.size_max);
         viz_app->setOrbitWidth(args.viz.orbit_width);
+        viz_app->setCameraCenter(args.viz.camera_center);
+        viz_app->setCameraDistance(args.viz.camera_distance);
+        viz_app->setCameraRotation(args.viz.camera_rotation);
     }
 }
 
