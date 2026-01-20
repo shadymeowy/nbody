@@ -3,7 +3,7 @@ This project is a simulation of an N-body system using Barnes-Hut algorithm for 
 
 <img src="assets/ring.gif" alt="Simulation demo" width="540"/> <img src="assets/octree_viz.gif" alt="Viz demo" width="540"/>
 
-[Try it in your browser](https://shadymeowy.github.io/in1503-project-viz-website/?viz=&msgpack_input=ring.msgpack&config=ring.toml)
+[Try it in your browser](https://shadymeowy.github.io/nbody/?viz=&msgpack_input=ring.msgpack&config=ring.toml)
 
 ## Features
 - Barnes-Hut algorithm using a octree structure for efficient force calculations
@@ -107,19 +107,19 @@ Skipping details here, see `nbody --help` for all available options and details.
 ## Gallery
 <img src="assets/octree_viz.gif" alt="Viz demo" width="540"/>
 
-Try me in your browser: [Octree Visualization](https://shadymeowy.github.io/in1503-project-viz-website/?viz=&config=octree_viz.toml&viz_show_octree=&output_interval=1e-1)
+Try me in your browser: [Octree Visualization](https://shadymeowy.github.io/nbody/?viz=&config=octree_viz.toml&viz_show_octree=&output_interval=1e-1)
 
 <img src="assets/j2000.gif" alt="Viz demo" width="540"/>
 
-Try me in your browser: [J2000 Visualization](https://shadymeowy.github.io/in1503-project-viz-website/?viz=&msgpack_input=j2000.msgpack&config=j2000.toml)
+Try me in your browser: [J2000 Visualization](https://shadymeowy.github.io/nbody/?viz=&msgpack_input=j2000.msgpack&config=j2000.toml)
 
 <img src="assets/ring.gif" alt="Viz demo" width="540"/>
 
-Try me in your browser: [Ring Visualization](https://shadymeowy.github.io/in1503-project-viz-website/?viz=&msgpack_input=ring.msgpack&config=ring.toml)
+Try me in your browser: [Ring Visualization](https://shadymeowy.github.io/nbody/?viz=&msgpack_input=ring.msgpack&config=ring.toml)
 
 <img src="assets/simple.gif" alt="Viz demo" width="540"/>
 
-Try me in your browser: [Simple Visualization](https://shadymeowy.github.io/in1503-project-viz-website/?viz=&msgpack_input=simple.msgpack&config=simple.toml)
+Try me in your browser: [Simple Visualization](https://shadymeowy.github.io/nbody/?viz=&msgpack_input=simple.msgpack&config=simple.toml)
 
 
 ## Requirements Checklist
