@@ -10,6 +10,7 @@
 #include <array>
 #include <cassert>
 #include <cstdint>
+#include <msgpack.hpp>
 #include <vector>
 
 #include "common/body.hpp"
@@ -22,6 +23,12 @@ namespace nbodysim {
 struct BCube {
     Vec3 center{0.0, 0.0, 0.0};
     double half_size{0.0};
+
+    BCube() = default;
+    BCube(const Vec3 &c, double hs) : center(c), half_size(hs) {}
+
+    // msgpack definition
+    MSGPACK_DEFINE(center, half_size);
 };
 
 // node for octree
@@ -39,24 +46,67 @@ struct Node {
     int32_t body_index{-1};
 };
 
-// insert first body as root node of octree
-void insertRoot(std::vector<Node> &nodes, const std::vector<Body> &bodies,
-                int32_t body_idx);
+class Octree {
+   public:
+    // default constructor, creates empty octree
+    explicit Octree() = default;
 
-// insert a body into the octree starting from a given node
-// call it repeatedly to insert all bodies
-void insertBody(std::vector<Node> &nodes, const std::vector<Body> &bodies,
-                int32_t body_idx, int32_t node_idx = 0);
+    // constructor with theta parameter
+    explicit Octree(double theta) : theta2_{theta * theta} {}
 
-// since we are storing center_of_mass as sum(pos*mass)
-// we need to finalize it after all insertions
-void finalizeNodes(std::vector<Node> &nodes);
+    // calculate forces on bodies using the octree
+    // updates bodies' inplace
+    auto calculateForces(std::vector<Body> &bodies, bool reset = true) -> void;
 
-// calculate gravitational force exerted by a node on a body
-// using Barnes-Hut approximation
-void calculateForceOnBody(const std::vector<Node> &nodes,
-                          std::vector<Body> &bodies, int32_t body_idx,
-                          int32_t node_idx, double theta2 = 0.25);
+    // act as a functor to calculate forces
+    auto operator()(std::vector<Body> &bodies, bool reset = true) -> void {
+        calculateForces(bodies, reset);
+    }
+
+    // expose nodes for testing and visualization
+    const std::vector<Node> &getNodes() const {
+        return nodes_;
+    }
+
+    // build octree from bodies without calculating forces
+    void build(const std::vector<Body> &bodies);
+
+   private:
+    // storage for octree nodes
+    // this is only used for caching during force calculation
+    // after calculating forces, it is cleared
+    std::vector<Node> nodes_;
+    // barnes-hut theta parameter squared
+    double theta2_{0.25};
+
+    // insert first body as root node of octree
+    auto insertRoot(const std::vector<Body> &bodies, int32_t body_idx) -> void;
+
+    // insert a body into the octree starting from a given node
+    // call it repeatedly to insert all bodies
+    auto insertBody(const std::vector<Body> &bodies, int32_t body_idx,
+                    int32_t node_idx = 0) -> void;
+
+    // insert a child node into the octree by which octant it belongs to
+    auto insertChild(Node &node, const Body &body, int32_t body_idx,
+                     uint32_t octant) -> int32_t;
+
+    // since we are storing center_of_mass as sum(pos*mass)
+    // we need to finalize it after all insertions
+    auto finalizeNodes() -> void;
+
+    // calculate gravitational force exerted by a node on a body
+    // using Barnes-Hut approximation
+    auto calculateForceOnBody(std::vector<Body> &bodies, int32_t body_idx,
+                              int32_t node_idx, double theta2 = 0.25) const
+        -> void;
+
+    // calculate the bounding cube size for given bodies
+    // instead of calculating min/max for each axis,
+    // we just find the maximum absolute coordinate
+    static auto cubeBounds(const std::vector<Body> &bodies,
+                           double padding = 1e-5) -> BCube;
+};
 
 // determine the octant index
 static inline auto getOctant(Vec3 node_center, Vec3 body_pos) -> uint32_t {

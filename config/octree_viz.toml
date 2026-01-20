@@ -1,0 +1,29 @@
+# simulation
+strategy = "octree"
+scenario = "ring"
+integrator = "verlet"
+duration = 50
+timestep = 1e-1
+output_interval = 1e-1
+nozmom = false
+num_bodies = 64
+seed = 42
+
+# output 
+csv_output = "results/octree_viz.csv"
+msgpack_output = "results/octree_viz.msgpack"
+
+# visualization
+viz = true
+viz_show_orbits = false
+viz_speed_factor = 1.0
+viz_trail_length = 1.0
+viz_trail_segments = 10
+viz_size_scale = 100.0
+viz_size_min = 8.0
+viz_size_max = 32.0
+viz_orbit_width = 3.0
+viz_camera_center = [0.0, 0.0, 0.0]
+viz_camera_distance = 45.0
+viz_camera_rotation = [-0.6, 0.5, 0.0]
+viz_show_octree = true

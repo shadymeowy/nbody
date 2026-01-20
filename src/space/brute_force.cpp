@@ -23,14 +23,19 @@ void calculateForcesBF(std::vector<Body> &bodies) {
     }
 
     // loop over each body
-    for (size_t i = 0; i < n_bodies; i++) {
+
+    // if available use parallel for
+#ifdef _OPENMP
+#pragma omp parallel for schedule(static)
+#endif
+    for (int i = 0; i < n_bodies; i++) {
         // cache position
         const auto &pos_i = bodies[i].pos.v;
         // get reference to acceleration
         auto &acc_i = bodies[i].acc.v;
 
         // loop over other bodies to compute gravitational force
-        for (size_t j = i + 1; j < n_bodies; j++) {
+        for (int j = 0; j < n_bodies; j++) {
             // cache position
             const auto &pos_j = bodies[j].pos.v;
             // get reference to acceleration
@@ -55,12 +60,6 @@ void calculateForcesBF(std::vector<Body> &bodies) {
             acc_i[0] += accel_i * dx;
             acc_i[1] += accel_i * dy;
             acc_i[2] += accel_i * dz;
-
-            // acceleration contribution from body i on body j
-            const double accel_j = potential * bodies[i].mass;
-            acc_j[0] -= accel_j * dx;
-            acc_j[1] -= accel_j * dy;
-            acc_j[2] -= accel_j * dz;
         }
     }
 }

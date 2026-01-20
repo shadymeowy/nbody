@@ -42,6 +42,7 @@
 
 # build directory
 build/
+build_wasm/
 
 # cache directory
 .cache/

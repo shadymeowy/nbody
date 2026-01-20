@@ -12,8 +12,10 @@
 // euler is still available for testing and comparison (euler.hpp)
 // but even for simple SOLAR scenario, it shows significant energy drift
 
+#include <spdlog/spdlog.h>
+
 #include <cstddef>
-#include <iostream>
+#include <functional>
 #include <vector>
 
 #include "common/body.hpp"
@@ -21,10 +23,10 @@
 
 namespace nbodysim {
 
-template <typename F>
+template <typename F, typename R>
 auto simulateVerlet(std::vector<Body> &bodies, size_t n_steps, double dt,
-                    size_t output_interval, F &f_force)
-    -> std::vector<SimState> {
+                    size_t output_interval, F &&f, R &&r)
+    -> SimResult {
     // get number of bodies and steps
     const size_t num_bodies = bodies.size();
 
@@ -36,7 +38,7 @@ auto simulateVerlet(std::vector<Body> &bodies, size_t n_steps, double dt,
     states.reserve(n_steps);
 
     // initial force calculation
-    f_force(bodies);
+    std::invoke<F>(std::forward<F>(f), bodies);
 
     for (size_t block = 0; block < n_steps; block += output_interval) {
         const double current_time = static_cast<double>(block) * dt;
@@ -45,9 +47,7 @@ auto simulateVerlet(std::vector<Body> &bodies, size_t n_steps, double dt,
         states.emplace_back(current_time, bodies);
 
         // print progress
-        // TODO: use proper logging system
-        std::cout << "\rSimulated " << (block * 100) / n_steps << "% of steps."
-                  << std::flush;
+        std::invoke<R>(std::forward<R>(r), block);
 
         // perform output_interval steps
         // hope is that compiler will optimize this loop well
@@ -70,7 +70,7 @@ auto simulateVerlet(std::vector<Body> &bodies, size_t n_steps, double dt,
             }
 
             // compute accelerations for each body
-            f_force(bodies);
+            std::invoke<F>(std::forward<F>(f), bodies);
 
             // update velocities and positions (kick)
             for (size_t i = 0; i < num_bodies; i++) {
@@ -86,11 +86,8 @@ auto simulateVerlet(std::vector<Body> &bodies, size_t n_steps, double dt,
         }
     }
 
-    // TODO: use proper logging system
-    std::cout << "\rSimulated 100% of steps.            \n";
-
     // return recorded states with RVO
-    return states;
+    return SimResult{states};
 }
 
 }  // namespace nbodysim

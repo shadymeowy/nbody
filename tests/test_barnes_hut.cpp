@@ -9,8 +9,8 @@
 #include "integrator/verlet.hpp"
 #include "scenario/cluster.hpp"
 #include "scenario/solar.hpp"
-#include "space/barnes_hut.hpp"
 #include "space/brute_force.hpp"
+#include "space/octree.hpp"
 #include "utils.hpp"
 
 namespace nb = nbodysim;
@@ -25,18 +25,22 @@ TEST_CASE("solar system barneshut vs brute force") {
     const double timestep = 1e-6;
     const size_t output_interval = 10;
 
-    // run brute force simulation
-    auto states_bf = nb::simulateVerlet(bodies, n_steps, timestep,
-                                        output_interval, nb::calculateForcesBF);
+    // empty progress updater
+    auto progress_updater = [](double) {};
 
+    // run brute force simulation
+    auto result_bf =
+        nb::simulateVerlet(bodies, n_steps, timestep, output_interval,
+                           nb::calculateForcesBF, progress_updater);
+                           
     // run barnes-hut simulation
-    nb::BarnesHut barnes_hut{0.5};
-    auto states_bh = nb::simulateVerlet(bodies, n_steps, timestep,
-                                        output_interval, barnes_hut);
+    nb::Octree octree{0.5};
+    auto result_bh = nb::simulateVerlet(
+        bodies, n_steps, timestep, output_interval, octree, progress_updater);
 
     // compare final states
-    const auto &final_bf = states_bf.back();
-    const auto &final_bh = states_bh.back();
+    const auto &final_bf = result_bf.states.back();
+    const auto &final_bh = result_bh.states.back();
     REQUIRE(final_bf.bodies.size() == final_bh.bodies.size());
 
     for (size_t i = 0; i < final_bf.bodies.size(); ++i) {
@@ -58,17 +62,18 @@ TEST_CASE("cluster barneshut vs brute force") {
     const size_t output_interval = 10;
 
     // run brute force simulation
-    auto states_bf = nb::simulateVerlet(bodies, n_steps, timestep,
-                                        output_interval, nb::calculateForcesBF);
+    auto result_bf =
+        nb::simulateVerlet(bodies, n_steps, timestep, output_interval,
+                           nb::calculateForcesBF, [](double) {});
 
     // run barnes-hut simulation
-    nb::BarnesHut barnes_hut{0.5};
-    auto states_bh = nb::simulateVerlet(bodies, n_steps, timestep,
-                                        output_interval, barnes_hut);
+    nb::Octree octree{0.5};
+    auto result_bh = nb::simulateVerlet(bodies, n_steps, timestep,
+                                        output_interval, octree, [](double) {});
 
     // compare final states
-    const auto &final_bf = states_bf.back();
-    const auto &final_bh = states_bh.back();
+    const auto &final_bf = result_bf.states.back();
+    const auto &final_bh = result_bh.states.back();
     REQUIRE(final_bf.bodies.size() == final_bh.bodies.size());
 
     for (size_t i = 0; i < final_bf.bodies.size(); ++i) {

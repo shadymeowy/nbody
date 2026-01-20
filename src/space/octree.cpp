@@ -14,11 +14,46 @@
 
 namespace nbodysim {
 
-namespace {
-// calculate the bounding cube size for given bodies
-// instead of calculating min/max for each axis,
-// we just find the maximum absolute coordinate
-auto cubeBounds(const std::vector<Body> &bodies, double padding = 1e-5)
+auto Octree::calculateForces(std::vector<Body> &bodies, bool reset) -> void {
+    // reset the octree if requested
+    if (reset) {
+        build(bodies);
+    }
+
+    // ensure octree is built
+    if (nodes_.empty()) {
+        return;
+    }
+
+    // loop over each body and calculate force using octree
+
+    // if available use parallel for
+#ifdef _OPENMP
+#pragma omp parallel for schedule(dynamic)
+#endif
+    for (int i = 0; i < bodies.size(); ++i) {
+        // reset acceleration
+        bodies[i].acc = {0.0, 0.0, 0.0};
+        // calculate force recursively
+        calculateForceOnBody(bodies, i, 0, theta2_);
+    }
+}
+
+auto Octree::build(const std::vector<Body> &bodies) -> void {
+    // reserve space for nodes
+    nodes_.reserve(bodies.size() * 2);
+
+    // construct by inserting each body
+    insertRoot(bodies, 0);
+    for (size_t i = 1; i < bodies.size(); ++i) {
+        insertBody(bodies, static_cast<int32_t>(i));
+    }
+
+    // finalize center of mass calculations
+    finalizeNodes();
+}
+
+auto Octree::cubeBounds(const std::vector<Body> &bodies, double padding)
     -> BCube {
     // initialize min and max vectors
     Vec3 mn{std::numeric_limits<double>::max(),
@@ -56,11 +91,11 @@ auto cubeBounds(const std::vector<Body> &bodies, double padding = 1e-5)
     // ie bodies on the edge
     const double half_size = (max_size * 0.5) + padding;
 
-    return BCube{.center = center, .half_size = half_size};
+    return BCube{center, half_size};
 }
 
-auto insertChild(std::vector<Node> &nodes, Node &node, const Body &body,
-                 int32_t body_idx, uint32_t octant) -> int32_t {
+auto Octree::insertChild(Node &node, const Body &body, int32_t body_idx,
+                         uint32_t octant) -> int32_t {
     // ensure child does not exist, should not happen
     assert(node.children[octant] == -1);
 
@@ -88,18 +123,15 @@ auto insertChild(std::vector<Node> &nodes, Node &node, const Body &body,
     // add child to nodes
     // first calculate its index then push back
     // else the ref will be invalidated
-    auto child_idx = static_cast<int32_t>(nodes.size());
+    auto child_idx = static_cast<int32_t>(nodes_.size());
     node.children[static_cast<size_t>(octant)] = child_idx;
-    nodes.push_back(child);
+    nodes_.push_back(child);
     return child_idx;
 }
 
-}  // namespace
-
-void insertRoot(std::vector<Node> &nodes, const std::vector<Body> &bodies,
-                int32_t body_idx) {
+void Octree::insertRoot(const std::vector<Body> &bodies, int32_t body_idx) {
     // clear previous octree
-    nodes.clear();
+    nodes_.clear();
 
     // get the body to insert
     assert(body_idx >= 0 && body_idx < static_cast<int32_t>(bodies.size()));
@@ -115,11 +147,11 @@ void insertRoot(std::vector<Node> &nodes, const std::vector<Body> &bodies,
     root.cm.v[1] = body.pos.v[1] * body.mass;
     root.cm.v[2] = body.pos.v[2] * body.mass;
     root.mass = body.mass;
-    nodes.push_back(root);
+    nodes_.push_back(root);
 }
 
-void insertBody(std::vector<Node> &nodes, const std::vector<Body> &bodies,
-                int32_t body_idx, int32_t node_idx) {
+void Octree::insertBody(const std::vector<Body> &bodies, int32_t body_idx,
+                        int32_t node_idx) {
     // get the body to insert
     assert(body_idx >= 0 && body_idx < static_cast<int32_t>(bodies.size()));
     const Body &body = bodies[body_idx];
@@ -129,7 +161,7 @@ void insertBody(std::vector<Node> &nodes, const std::vector<Body> &bodies,
 
     // get the current node
     assert(node_idx >= 0 && node_idx < static_cast<int32_t>(nodes.size()));
-    Node &node = nodes[node_idx];
+    Node &node = nodes_[node_idx];
 
     // if the node is branch node
     if (node.body_index == -1) {
@@ -151,11 +183,11 @@ void insertBody(std::vector<Node> &nodes, const std::vector<Body> &bodies,
         if (child_idx == -1) {
             // create child node
             // this doesnt recurse etc
-            insertChild(nodes, node, body, body_idx, octant);
+            insertChild(node, body, body_idx, octant);
         } else {
             // child node exists
             // recursively insert into child node
-            insertBody(nodes, bodies, body_idx, child_idx);
+            insertBody(bodies, body_idx, child_idx);
         }
     } else {
         // node is a leaf node
@@ -168,17 +200,16 @@ void insertBody(std::vector<Node> &nodes, const std::vector<Body> &bodies,
         // find octant of existing body
         auto octant_old = getOctant(node.cube.center, bodies[body_idx_old].pos);
         // reinsert the existing body
-        insertChild(nodes, node, bodies[body_idx_old], body_idx_old,
-                    octant_old);
+        insertChild(node, bodies[body_idx_old], body_idx_old, octant_old);
 
         // then we need to insert the new body
         // this needs to be recursive since both bodies could be in same octant
-        insertBody(nodes, bodies, body_idx, node_idx);
+        insertBody(bodies, body_idx, node_idx);
     }
 }
 
-void finalizeNodes(std::vector<Node> &nodes) {
-    for (auto &node : nodes) {
+auto Octree::finalizeNodes() -> void {
+    for (auto &node : nodes_) {
         if (node.mass > 0) {
             node.cm.v[0] /= node.mass;
             node.cm.v[1] /= node.mass;
@@ -187,14 +218,10 @@ void finalizeNodes(std::vector<Node> &nodes) {
     }
 }
 
-// the force calculation function
-// it modifies the body's acceleration directly
-// note that theta2 is theta squared
-void calculateForceOnBody(const std::vector<Node> &nodes,
-                          std::vector<Body> &bodies, int32_t body_idx,
-                          int32_t node_idx, double theta2) {
+void Octree::calculateForceOnBody(std::vector<Body> &bodies, int32_t body_idx,
+                                  int32_t node_idx, double theta2) const {
     auto &target_body = bodies[body_idx];
-    const auto &node = nodes[node_idx];
+    const auto &node = nodes_[node_idx];
     const auto &node_cm = node.cm.v;
 
     // find position vector respect to body i
@@ -254,7 +281,7 @@ void calculateForceOnBody(const std::vector<Node> &nodes,
             if (child_idx == -1) {
                 continue;
             }
-            calculateForceOnBody(nodes, bodies, body_idx, child_idx, theta2);
+            calculateForceOnBody(bodies, body_idx, child_idx, theta2);
         }
     }
 }

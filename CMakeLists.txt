@@ -15,13 +15,8 @@ project(nbody
 #     set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE}")
 # endif()
 
-# find and enable OpenMP if available
+# find OpenMP if available
 find_package(OpenMP)
-if (OPENMP_FOUND)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
-endif ()
 
 # get doctest as testing framework
 include(FetchContent)
@@ -32,11 +27,58 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(doctest)
 
+# get CLI11 as command line parser
+FetchContent_Declare(
+    CLI11
+    URL https://github.com/CLIUtils/CLI11/archive/refs/tags/v2.6.1.zip
+    DOWNLOAD_EXTRACT_TIMESTAMP ON
+)
+FetchContent_MakeAvailable(CLI11)
+
+# get spdlog as logging library
+FetchContent_Declare(
+    spdlog
+    URL https://github.com/gabime/spdlog/archive/refs/tags/v1.16.0.zip
+    DOWNLOAD_EXTRACT_TIMESTAMP ON
+)
+FetchContent_MakeAvailable(spdlog)
+
+# get indicators as progress bar library
+FetchContent_Declare(
+    indicators
+    URL https://github.com/p-ranav/indicators/archive/refs/tags/v2.3.zip
+    DOWNLOAD_EXTRACT_TIMESTAMP ON
+)
+FetchContent_MakeAvailable(indicators)
+
+# fetch glviskit
+# build even if headless/no gui deps are found
+set(SDL_UNIX_CONSOLE_BUILD ON CACHE BOOL "" FORCE)
+include(FetchContent)
+FetchContent_Declare(
+    glviskit
+    GIT_REPOSITORY https://github.com/shadymeowy/glviskit.git
+    GIT_TAG        959c17a25f428c773ea038db53b928ba89ce956b
+    GIT_SHALLOW    FALSE
+)
+FetchContent_MakeAvailable(glviskit)
+
+# disable msgpack tests and examples to avoid unnecessary 
+set(MSGPACK_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(MSGPACK_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(MSGPACK_USE_BOOST OFF CACHE BOOL "" FORCE)
+
+# fetch msgpack-cxx
+FetchContent_Declare(msgpack-cxx
+  GIT_REPOSITORY https://github.com/msgpack/msgpack-c.git
+  GIT_TAG        cpp-7.0.0
+  GIT_SHALLOW    TRUE
+)
+FetchContent_MakeAvailable(msgpack-cxx)
+
 # if supported, use faster compilation flags
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    add_compile_options(-O3 -march=native -flto)
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    add_compile_options(/O2 /GL)
+    add_compile_options(-O3 -flto)
 endif()
 
 # we will target modern c++
@@ -46,18 +88,76 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # create a static library for core functionality
 # we will link this to the main executable and tests later
-file(GLOB_RECURSE CORE_SOURCES CONFIGURE_DEPENDS "src/*.cpp")
-add_library(nbody_core STATIC ${CORE_SOURCES})
+file(GLOB SOURCES_CORE CONFIGURE_DEPENDS 
+    "src/common/*.cpp"
+    "src/integrator/*.cpp"
+    "src/scenario/*.cpp"
+    "src/space/*.cpp"
+    "src/viz/*.cpp"
+)
 
+# create core library
+add_library(nbody_core STATIC ${SOURCES_CORE})
+# add include directories for core library
 target_include_directories(nbody_core PUBLIC 
     "${CMAKE_CURRENT_SOURCE_DIR}/include"
     "${CMAKE_CURRENT_SOURCE_DIR}/src"
 )
+# link spdlog to core library
+target_link_libraries(nbody_core PUBLIC 
+    spdlog::spdlog
+    glviskit::glviskit
+    msgpack-cxx
+)
+if (OpenMP_CXX_FOUND)
+    target_link_libraries(nbody_core PUBLIC OpenMP::OpenMP_CXX)
+endif()
+
+# create args parser library
+file(GLOB SOURCES_ARGS CONFIGURE_DEPENDS 
+    "src/args/*.cpp"
+)
+add_library(nbody_args STATIC ${SOURCES_ARGS})
+# add include directories for args parser library
+target_include_directories(nbody_args PUBLIC 
+    "${CMAKE_CURRENT_SOURCE_DIR}/include"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src"
+)
+# link CLI11 to args parser library
+target_link_libraries(nbody_args PUBLIC 
+    CLI11::CLI11
+    spdlog::spdlog
+    msgpack-cxx
+    glviskit::glviskit
+)
 
 # create the main executable for the nbody simulator
-add_executable(nbody src/cli/main.cpp)
+add_executable(nbody
+    "src/entry/cliapp.cpp"
+)
 # link core library to main executable
-target_link_libraries(nbody PRIVATE nbody_core)
+target_link_libraries(nbody PRIVATE
+    nbody_core
+    nbody_args
+    indicators::indicators
+)
+
+# check for emscripten and set specific options
+if(EMSCRIPTEN)
+    # use emscipten main file
+    target_sources(nbody PRIVATE "src/entry/main_web.cpp")
+    set_target_properties(nbody PROPERTIES SUFFIX ".html")
+    target_link_options(nbody PRIVATE
+        "-sWASM=1"
+        "-sALLOW_MEMORY_GROWTH=1"
+        "--shell-file" "${CMAKE_CURRENT_SOURCE_DIR}/web/shell_minimal.html"
+        "-sFORCE_FILESYSTEM=1"
+        "-sASSERTIONS=1"
+    )
+else()
+    # use standard main file
+    target_sources(nbody PRIVATE "src/entry/main.cpp")
+endif()
 
 # enable testing module
 enable_testing()
@@ -67,7 +167,8 @@ file(GLOB_RECURSE TEST_SOURCES CONFIGURE_DEPENDS "tests/*.cpp")
 add_executable(nbody_test ${TEST_SOURCES})
 # link core library to tests
 target_link_libraries(nbody_test PRIVATE
-    nbody_core doctest::doctest
+    nbody_core
+    doctest::doctest
 )
 # add include directories for tests
 target_include_directories(nbody_test PRIVATE

@@ -10,7 +10,7 @@ namespace nbodysim::constants {
 static constexpr double g_au = 39.47841760435743;
 
 // softening factor used for avoiding singularities as possible
-static constexpr double softening_au = 1e-8;
+static constexpr double softening_au = 1e-16;
 
 // pi constant, to lower cpp requirement to c++17
 static constexpr double pi = 3.141592653589793238462643383279502884;

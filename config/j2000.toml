@@ -1,0 +1,29 @@
+# simulation
+strategy = "brute_force"
+scenario = "j2000"
+integrator = "yoshida"
+duration = 1000
+timestep = 1e-1
+output_interval = 5e-1
+nozmom = false
+# num_bodies = 0
+# seed = 42
+
+# output 
+csv_output = "results/j2000.csv"
+msgpack_output = "results/j2000.msgpack"
+
+# visualization
+viz = true
+viz_show_orbits = true
+viz_speed_factor = 10.0
+viz_trail_length = 2.0
+viz_trail_segments = 50
+viz_size_scale = 10.0
+viz_size_min = 8.0
+viz_size_max = 32.0
+viz_orbit_width = 3.0
+viz_camera_center = [0.0, 0.0, 0.0]
+viz_camera_distance = 100.0
+viz_camera_rotation = [-0.5, 0.0, 0.0]
+viz_show_octree = false
