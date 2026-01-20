@@ -8,15 +8,34 @@ project(nbody
     LANGUAGES CXX C
 )
 
+option(NBODY_USE_OPENMP "Enable OpenMP support" OFF)
+option(NBODY_USE_SIMD "Enable SIMD optimizations" OFF)
+option(NBODY_USE_SOA "Enable Structure of Arrays data layout" OFF)
+
+if (NBODY_USE_OPENMP)
+    find_package(OpenMP REQUIRED)
+    add_definitions(-DNBODY_USE_OPENMP)
+endif()
+
+if (NBODY_USE_SIMD)
+    add_definitions(-DNBODY_USE_SIMD)
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        add_compile_options(-march=native)
+    elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+        add_compile_options(/arch:AVX2)
+    endif()
+endif()
+
+if (NBODY_USE_SOA)
+    add_definitions(-DNBODY_USE_SOA)
+endif()
+
 # find clang-tidy and enable if available
 # this will automatically run clang-tidy on each compilation
 # find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
 # if(CLANG_TIDY_EXE)
 #     set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE}")
 # endif()
-
-# find OpenMP if available
-find_package(OpenMP)
 
 # get doctest as testing framework
 include(FetchContent)
@@ -109,7 +128,7 @@ target_link_libraries(nbody_core PUBLIC
     glviskit::glviskit
     msgpack-cxx
 )
-if (OpenMP_CXX_FOUND)
+if (NBODY_USE_OPENMP)
     target_link_libraries(nbody_core PUBLIC OpenMP::OpenMP_CXX)
 endif()
 
