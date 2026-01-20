@@ -12,7 +12,7 @@
 #include <vector>
 
 #include "common/body.hpp"
-#include "integrator/sim_state.hpp"
+#include "common/sim_state.hpp"
 
 namespace nbodysim {
 

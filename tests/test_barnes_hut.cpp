@@ -5,7 +5,7 @@
 
 #include "common/body.hpp"
 #include "doctest.h"
-#include "integrator/sim_state.hpp"
+#include "common/sim_state.hpp"
 #include "integrator/verlet.hpp"
 #include "scenario/cluster.hpp"
 #include "scenario/solar.hpp"

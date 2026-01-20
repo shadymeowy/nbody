@@ -8,7 +8,7 @@
 
 #include "glviskit/render_list.hpp"
 #include "glviskit/sdl/window.hpp"
-#include "integrator/sim_state.hpp"
+#include "common/sim_state.hpp"
 
 // someone put a macro named CreateWindow somewhere
 // (looking at you, windows.h)

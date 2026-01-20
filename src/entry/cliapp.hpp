@@ -2,7 +2,7 @@
 
 // project includes
 #include "args/args.hpp"
-#include "integrator/sim_state.hpp"
+#include "common/sim_state.hpp"
 #include "viz/viz.hpp"
 
 // CLI application class for nbody simulation

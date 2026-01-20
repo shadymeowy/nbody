@@ -16,7 +16,7 @@
 #include "common/body.hpp"
 #include "common/energy_utils.hpp"
 #include "integrator/euler.hpp"
-#include "integrator/sim_state.hpp"
+#include "common/sim_state.hpp"
 #include "integrator/verlet.hpp"
 #include "integrator/yoshida.hpp"
 #include "scenario/cluster.hpp"
