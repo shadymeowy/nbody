@@ -14,7 +14,7 @@ csv_output = "results/cluster.csv"
 msgpack_output = "results/cluster.msgpack"
 
 # visualization
-viz = true
+viz = false
 viz_show_orbits = true
 viz_speed_factor = 1.0
 viz_trail_length = 1.0

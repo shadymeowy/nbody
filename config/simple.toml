@@ -14,7 +14,7 @@ csv_output = "results/simple.csv"
 msgpack_output = "results/simple.msgpack"
 
 # visualization
-viz = true
+viz = false
 viz_show_orbits = true
 viz_speed_factor = 10.0
 viz_trail_length = 2.0

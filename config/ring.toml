@@ -14,7 +14,7 @@ csv_output = "results/ring.csv"
 msgpack_output = "results/ring.msgpack"
 
 # visualization
-viz = true
+viz = false
 viz_show_orbits = false
 viz_speed_factor = 1.0
 viz_trail_length = 1.0

@@ -14,7 +14,7 @@ csv_output = "results/octree_viz.csv"
 msgpack_output = "results/octree_viz.msgpack"
 
 # visualization
-viz = true
+viz = false
 viz_show_orbits = false
 viz_speed_factor = 1.0
 viz_trail_length = 1.0
