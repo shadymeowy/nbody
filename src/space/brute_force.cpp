@@ -25,8 +25,8 @@ void calculateForcesBF(std::vector<Body> &bodies) {
     // loop over each body
 
     // if available use parallel for
-#ifdef _OPENMP
-#pragma omp parallel for schedule(static)
+#ifdef NBODY_USE_OPENMP
+#pragma omp parallel for schedule(dynamic)
 #endif
     for (int i = 0; i < n_bodies; i++) {
         // cache position

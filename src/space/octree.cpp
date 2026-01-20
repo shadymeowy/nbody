@@ -28,7 +28,7 @@ auto Octree::calculateForces(std::vector<Body> &bodies, bool reset) -> void {
     // loop over each body and calculate force using octree
 
     // if available use parallel for
-#ifdef _OPENMP
+#ifdef NBODY_USE_OPENMP
 #pragma omp parallel for schedule(dynamic)
 #endif
     for (int i = 0; i < bodies.size(); ++i) {
@@ -157,10 +157,10 @@ void Octree::insertBody(const std::vector<Body> &bodies, int32_t body_idx,
     const Body &body = bodies[body_idx];
 
     // ensure nodes is not empty, atleast root node should exist
-    assert(!nodes.empty());
+    assert(!nodes_.empty());
 
     // get the current node
-    assert(node_idx >= 0 && node_idx < static_cast<int32_t>(nodes.size()));
+    assert(node_idx >= 0 && node_idx < static_cast<int32_t>(nodes_.size()));
     Node &node = nodes_[node_idx];
 
     // if the node is branch node
