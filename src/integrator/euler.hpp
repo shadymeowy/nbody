@@ -40,8 +40,8 @@ auto simulateEuler(std::vector<Body> &bodies, size_t n_steps, double dt,
             std::invoke<F>(std::forward<F>(f), bodies);
 
             // update velocities and positions (kick)
-#ifdef NBODY_USE_OPENMP
-#pragma omp parallel for schedule(dynamic)
+#ifdef NBODY_USE_SIMD
+#pragma omp simd
 #endif
             for (size_t i = 0; i < num_bodies; i++) {
                 auto &vel = bodies[i].vel;

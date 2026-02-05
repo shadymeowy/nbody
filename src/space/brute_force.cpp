@@ -25,9 +25,6 @@ void calculateForcesBF(std::vector<Body> &bodies) {
     // loop over each body
 
     // if available use parallel for
-#ifdef NBODY_USE_OPENMP
-#pragma omp parallel for schedule(dynamic)
-#endif
     for (int i = 0; i < n_bodies; i++) {
         // cache position
         const auto &pos_i = bodies[i].pos.v;
@@ -35,6 +32,9 @@ void calculateForcesBF(std::vector<Body> &bodies) {
         auto &acc_i = bodies[i].acc.v;
 
         // loop over other bodies to compute gravitational force
+#ifdef NBODY_USE_SIMD
+#pragma omp simd
+#endif
         for (int j = 0; j < n_bodies; j++) {
             // cache position
             const auto &pos_j = bodies[j].pos.v;

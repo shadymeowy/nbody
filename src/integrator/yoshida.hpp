@@ -68,8 +68,8 @@ auto simulateYoshida(std::vector<Body> &bodies, size_t n_steps, double dt,
         for (size_t step = 0; step < output_interval; step++) {
             for (size_t k = 0; k < 4; k++) {
                 // update velocities
-#ifdef NBODY_USE_OPENMP
-#pragma omp parallel for schedule(dynamic)
+#ifdef NBODY_USE_SIMD
+#pragma omp simd
 #endif
                 for (size_t i = 0; i < num_bodies; i++) {
                     auto &pos = bodies[i].pos;
