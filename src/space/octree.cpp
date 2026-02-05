@@ -219,69 +219,80 @@ auto Octree::finalizeNodes() -> void {
 }
 
 void Octree::calculateForceOnBody(std::vector<Body> &bodies, int32_t body_idx,
-                                  int32_t node_idx, double theta2) const {
-    auto &target_body = bodies[body_idx];
-    const auto &node = nodes_[node_idx];
-    const auto &node_cm = node.cm.v;
+                                  int32_t root_node_idx, double theta2) const {
+    // stack for iterative traversal
+    std::vector<int32_t> stack;
+    stack.reserve(128);
+    stack.push_back(root_node_idx);
 
-    // find position vector respect to body i
-    const auto &pos = target_body.pos.v;
-    const double dx = node_cm[0] - pos[0];
-    const double dy = node_cm[1] - pos[1];
-    const double dz = node_cm[2] - pos[2];
+    // iterative traversal of octree
+    while (!stack.empty()) {
+        int32_t node_idx = stack.back();
+        stack.pop_back();
+        auto &target_body = bodies[body_idx];
+        const auto &node = nodes_[node_idx];
+        const auto &node_cm = node.cm.v;
 
-    double dist2 = (dx * dx) + (dy * dy) + (dz * dz);
+        // find position vector respect to body i
+        const auto &pos = target_body.pos.v;
+        const double dx = node_cm[0] - pos[0];
+        const double dy = node_cm[1] - pos[1];
+        const double dz = node_cm[2] - pos[2];
 
-    // if node is leaf node
-    if (node.body_index != -1) {
-        if (node.body_index == body_idx) {
-            // same body, skip
-            return;
-        }
+        double dist2 = (dx * dx) + (dy * dy) + (dz * dz);
 
-        // calculate direct force
-        dist2 += constants::softening_au;
-        const double rdist = 1 / std::sqrt(dist2);
-        const double rdist3 = rdist * rdist * rdist;
-
-        // calculate accel magnitude
-        const double accel = (constants::g_au * node.mass) * rdist3;
-
-        // update target body's acceleration
-        target_body.acc.v[0] += accel * dx;
-        target_body.acc.v[1] += accel * dy;
-        target_body.acc.v[2] += accel * dz;
-        return;
-    }
-
-    // size of the node
-    const double s = node.cube.half_size * 2.0;
-    const double s2 = s * s;
-
-    // Barnes-Hut criterion
-    if (s2 < theta2 * dist2) {
-        // treat as single body
-
-        // compute softened distance cubed
-        dist2 += constants::softening_au;
-        const double rdist = 1 / std::sqrt(dist2);
-        const double rdist3 = rdist * rdist * rdist;
-
-        // calculate accel magnitude
-        const double accel = constants::g_au * node.mass * rdist3;
-
-        // update target body's acceleration
-        target_body.acc.v[0] += accel * dx;
-        target_body.acc.v[1] += accel * dy;
-        target_body.acc.v[2] += accel * dz;
-    } else {
-        // need to continue traversing children
-        for (int i = 0; i < 8; ++i) {
-            const int32_t child_idx = node.children[i];
-            if (child_idx == -1) {
+        // if node is leaf node
+        if (node.body_index != -1) {
+            if (node.body_index == body_idx) {
+                // same body, skip
                 continue;
             }
-            calculateForceOnBody(bodies, body_idx, child_idx, theta2);
+
+            // calculate direct force
+            dist2 += constants::softening_au;
+            const double rdist = 1 / std::sqrt(dist2);
+            const double rdist3 = rdist * rdist * rdist;
+
+            // calculate accel magnitude
+            const double accel = (constants::g_au * node.mass) * rdist3;
+
+            // update target body's acceleration
+            target_body.acc.v[0] += accel * dx;
+            target_body.acc.v[1] += accel * dy;
+            target_body.acc.v[2] += accel * dz;
+            continue;
+        }
+
+        // size of the node
+        const double s = node.cube.half_size * 2.0;
+        const double s2 = s * s;
+
+        // Barnes-Hut criterion
+        if (s2 < theta2 * dist2) {
+            // treat as single body
+
+            // compute softened distance cubed
+            dist2 += constants::softening_au;
+            const double rdist = 1 / std::sqrt(dist2);
+            const double rdist3 = rdist * rdist * rdist;
+
+            // calculate accel magnitude
+            const double accel = constants::g_au * node.mass * rdist3;
+
+            // update target body's acceleration
+            target_body.acc.v[0] += accel * dx;
+            target_body.acc.v[1] += accel * dy;
+            target_body.acc.v[2] += accel * dz;
+        } else {
+            // need to continue traversing children
+            for (int i = 0; i < 8; ++i) {
+                const int32_t child_idx = node.children[i];
+                if (child_idx == -1) {
+                    continue;
+                }
+                // add child to stack
+                stack.push_back(child_idx);
+            }
         }
     }
 }
