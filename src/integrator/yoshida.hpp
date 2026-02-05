@@ -21,8 +21,7 @@ namespace nbodysim {
 
 template <typename F, typename R>
 auto simulateYoshida(std::vector<Body> &bodies, size_t n_steps, double dt,
-                     size_t output_interval, F &&f, R &&r)
-    -> SimResult {
+                     size_t output_interval, F &&f, R &&r) -> SimResult {
     // get number of bodies and steps
     const size_t num_bodies = bodies.size();
 
@@ -69,6 +68,9 @@ auto simulateYoshida(std::vector<Body> &bodies, size_t n_steps, double dt,
         for (size_t step = 0; step < output_interval; step++) {
             for (size_t k = 0; k < 4; k++) {
                 // update velocities
+#ifdef NBODY_USE_OPENMP
+#pragma omp parallel for schedule(dynamic)
+#endif
                 for (size_t i = 0; i < num_bodies; i++) {
                     auto &pos = bodies[i].pos;
                     auto &vel = bodies[i].vel;
