@@ -102,6 +102,8 @@ See below for **Sprint Requirements** and details for easy navigation and checki
 │   └── shell_minimal.html
 │   # CMake configuration for building the project
 ├── CMakeLists.txt
+│   # clang-format configuration for consistent code formatting
+├── .clang-format
 │   # gitignore file to ignore build artifacts and other unnecessary files from git
 ├── .gitignore
 │   # this document
