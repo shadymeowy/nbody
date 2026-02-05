@@ -21,6 +21,93 @@ This project is a simulation of an N-body system using Barnes-Hut algorithm for 
 
 See below for **Sprint Requirements** and details for easy navigation and checking off completed tasks.
 
+## Project Structure
+```bash
+# root folder of the project
+.
+│   # assets used for çin this document
+├── assets
+│   # config files for different scenarios and configurations
+├── config
+│   # results of different runs, including csv and msgpack outputs
+├── results
+│   # source code of the project, organized into different folders for different components
+├── src
+│   │   # parsing command line arguments and config files
+│   ├── args
+│   │   ├── args.cpp
+│   │   └── args.hpp
+│   │   # common utils and definitions used across the codebase
+│   ├── common
+│   │   │   # Body class which holds the state of each body
+│   │   ├── body.hpp
+│   │   │   # common constants
+│   │   ├── constants.hpp
+│   │   │   # energy calculation
+│   │   ├── energy_utils.cpp
+│   │   ├── energy_utils.hpp
+│   │   │   # container for simulation state and results
+│   │   ├── sim_state.cpp
+│   │   ├── sim_state.hpp
+│   │   │   # timing utility class
+│   │   ├── timer.hpp
+│   │   │   # vector class for 3D vectors
+│   │   └── vec.hpp
+│   ├── entry
+│   │   │   # entry points for different modes of running the simulation (CLI, web, etc.)
+│   │   ├── cliapp.cpp
+│   │   ├── cliapp.hpp
+│   │   │   # main functions for different modes, e.g. CLI and web
+│   │   ├── main.cpp
+│   │   └── main_web.cpp
+│   │   # different integrators for updating the state of the simulation 
+│   ├── integrator
+│   │   │   # basic Euler integrator
+│   │   ├── euler.hpp
+│   │   │   # second order Verlet integrator for better energy conservation
+│   │   ├── verlet.hpp
+│   │   │   # fourth order Yoshida integrator for even better energy conservation
+│   │   └── yoshida.hpp
+│   │   # different scenarios for initializing the simulation
+│   ├── scenario
+│   │   ├── cluster.cpp
+│   │   ├── cluster.hpp
+│   │   ├── ring.cpp
+│   │   ├── ring.hpp
+│   │   └── solar.hpp
+│   │   # different space partitioning algorithms for optimizing the force calculations
+│   ├── space
+│   │   │   # naive O(N^2) brute force algorithm for calculating forces between bodies
+│   │   ├── brute_force.cpp
+│   │   ├── brute_force.hpp
+│   │   │   # main idea of this project, the Barnes-Hut algorithm with octrees for O(N log N)
+│   │   ├── octree.cpp
+│   │   └── octree.hpp
+│   │   # 3D visualization of the simulation using glviskit
+│   └── viz
+│       ├── viz.cpp
+│       └── viz.hpp
+│   # tests for different components of the codebase
+├── tests
+│   ├── octree_consistency.hpp
+│   ├── test_barnes_hut.cpp
+│   ├── test_octree.cpp
+│   ├── test_runner.cpp
+│   └── utils.hpp
+│   # crude plotting utilities for visualizing results if glviskit is not available
+├── utils
+│   └── plot.py
+│   # emscripten shell interface for running the simulation in the browser, see demo links
+├── web
+│   └── shell_minimal.html
+│   # CMake configuration for building the project
+├── CMakeLists.txt
+│   # gitignore file to ignore build artifacts and other unnecessary files from git
+├── .gitignore
+│   # this document
+└── README.md
+```
+
 ## Requirements
 - Any C++20 compliant compiler
 - CMake 3.10 or higher
