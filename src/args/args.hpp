@@ -30,6 +30,8 @@ struct Arguments {
         YOSHIDA,
     };
 
+    // whether to enable debug logging
+    bool debug = false;
     // "space handling" strategy
     Strategy strategy = Strategy::BRUTE_FORCE;
     // scenarios

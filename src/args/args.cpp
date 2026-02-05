@@ -35,6 +35,8 @@ auto Arguments::parse(int argc, char **argv) -> Arguments {
         {"YOSHIDA", Arguments::Integrator::YOSHIDA}};
 
     // add options
+    app.add_flag("--debug", args.debug, "Enable debug logging");
+
     app.add_option("--strategy", args.strategy, "Simulation strategy")
         ->transform(CLI::CheckedTransformer(strategy_map, CLI::ignore_case))
         ->capture_default_str();
@@ -152,12 +154,20 @@ auto Arguments::parse(int argc, char **argv) -> Arguments {
         std::exit(app.exit(e));
     }
 
+    // set logging level based on debug flag
+    if (args.debug) {
+        spdlog::set_level(spdlog::level::debug);
+    } else {
+        spdlog::set_level(spdlog::level::info);
+    }
+
     args.print();
     return args;
 }
 
 auto Arguments::print() const -> void {
     spdlog::info("--- Simulation Arguments ---");
+    spdlog::info("  Debug Logging: {}", (debug ? "Enabled" : "Disabled"));
     spdlog::info("  Strategy: {}", fmt::streamed(strategy));
     spdlog::info("  Scenario: {}", fmt::streamed(scenario));
     spdlog::info("  Integrator: {}", fmt::streamed(integrator));
