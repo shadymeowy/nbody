@@ -15,8 +15,9 @@
 #include "args/args.hpp"
 #include "common/body.hpp"
 #include "common/energy_utils.hpp"
-#include "integrator/euler.hpp"
 #include "common/sim_state.hpp"
+#include "common/timer.hpp"
+#include "integrator/euler.hpp"
 #include "integrator/verlet.hpp"
 #include "integrator/yoshida.hpp"
 #include "scenario/cluster.hpp"
@@ -37,14 +38,22 @@ CLIApp::CLIApp(int argc, char **argv) : args(nb::Arguments::parse(argc, argv)) {
     if (!args.msgpack_input.empty() && args.msgpack_input != "") {
         spdlog::info("Loading simulation states from {} ...",
                      args.msgpack_input);
+
+        nb::Timer timer("Load MsgPack");
         result = nb::SimResult::loadFromMsgPack(args.msgpack_input);
+
         spdlog::info("Loaded {} simulation states.", result.states.size());
     } else if (!args.csv_input.empty() && args.csv_input != "") {
         spdlog::info("Loading simulation states from {} ...", args.csv_input);
+
+        nb::Timer timer("Load CSV");
         result = nb::SimResult::loadFromCSV(args.csv_input);
+
         spdlog::info("Loaded {} simulation states.", result.states.size());
     } else {
         spdlog::info("No input file specified. Running new simulation.");
+
+        nb::Timer timer("Simulation");
         result = simulate();
     }
 
@@ -64,12 +73,16 @@ CLIApp::CLIApp(int argc, char **argv) : args(nb::Arguments::parse(argc, argv)) {
     // if output csv file is specified, save results
     if (!args.csv_output.empty() && args.csv_output != "") {
         spdlog::info("Saving results to {} ...", args.csv_output);
+
+        nb::Timer timer("Save CSV");
         result.saveToCSV(args.csv_output);
     }
 
     // if output msgpack file is specified, save results
     if (!args.msgpack_output.empty() && args.msgpack_output != "") {
         spdlog::info("Saving results to {} ...", args.msgpack_output);
+
+        nb::Timer timer("Save MsgPack");
         result.saveToMsgPack(args.msgpack_output);
     }
 
@@ -98,21 +111,29 @@ auto CLIApp::simulate() -> nb::SimResult {
     std::vector<nb::Body> bodies;
     switch (args.scenario) {
         case nb::Arguments::Scenario::CLUSTER: {
+            nb::Timer timer("Generate Cluster");
+
             bodies = nb::generateRandomCluster(
                 static_cast<int>(args.num_bodies), args.seed);
             break;
         }
         case nb::Arguments::Scenario::J2000: {
+            nb::Timer timer("Load J2000");
+
             bodies = std::vector<nb::Body>(std::begin(nb::solar::bodies_j2000),
                                            std::end(nb::solar::bodies_j2000));
             break;
         }
         case nb::Arguments::Scenario::SIMPLE: {
+            nb::Timer timer("Load Simple Solar");
+
             bodies = std::vector<nb::Body>(std::begin(nb::solar::bodies_simple),
                                            std::end(nb::solar::bodies_simple));
             break;
         }
         case nb::Arguments::Scenario::RING: {
+            nb::Timer timer("Generate Ring");
+
             bodies = nb::generateRandomRing(static_cast<int>(args.num_bodies),
                                             args.seed);
             break;
@@ -190,18 +211,24 @@ auto CLIApp::simulate() -> nb::SimResult {
     // run selected integrator
     switch (args.integrator) {
         case nb::Arguments::Integrator::EULER: {
+            nb::Timer timer("Euler Simulation");
+
             result = nb::simulateEuler(bodies, n_steps, args.timestep,
                                        output_interval, space_strategy,
                                        progress_updater);
             break;
         }
         case nb::Arguments::Integrator::VERLET: {
+            nb::Timer timer("Verlet Simulation");
+
             result = nb::simulateVerlet(bodies, n_steps, args.timestep,
                                         output_interval, space_strategy,
                                         progress_updater);
             break;
         }
         case nb::Arguments::Integrator::YOSHIDA: {
+            nb::Timer timer("Yoshida Simulation");
+
             result = nb::simulateYoshida(bodies, n_steps, args.timestep,
                                          output_interval, space_strategy,
                                          progress_updater);
@@ -219,7 +246,9 @@ auto CLIApp::simulate() -> nb::SimResult {
 
     if (args.strategy == nb::Arguments::Strategy::OCTREE) {
         spdlog::info("Saving octree bounding cubes for each recorded state.");
+
         // for each recorded state, build octree and save bounding cube
+        nb::Timer timer("Calculate Octree Cubes For Viz");
         for (auto &state : result.states) {
             nb::Octree octree{0.5};
             octree.build(state.bodies);
