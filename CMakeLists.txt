@@ -96,9 +96,9 @@ FetchContent_Declare(msgpack-cxx
 FetchContent_MakeAvailable(msgpack-cxx)
 
 # if supported, use faster compilation flags
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    add_compile_options(-O3 -flto)
-endif()
+# if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+#     add_compile_options(-O3 -flto)
+# endif()
 
 # we will target modern c++
 set(CMAKE_CXX_STANDARD 17)
