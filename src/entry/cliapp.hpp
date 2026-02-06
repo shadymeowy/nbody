@@ -22,6 +22,5 @@ class CLIApp {
     std::unique_ptr<nbodysim::VizApp> viz_app{nullptr};
 
    private:
-    auto simulateOrLoad() -> nbodysim::SimResult;
     auto simulate() -> nbodysim::SimResult;
 };
