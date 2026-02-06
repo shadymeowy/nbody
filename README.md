@@ -25,7 +25,7 @@ See below for **Sprint Requirements** and details for easy navigation and checki
 ```bash
 # root folder of the project
 .
-│   # assets used for çin this document
+│   # assets used for in this document
 ├── assets
 │   # config files for different scenarios and configurations
 ├── config
