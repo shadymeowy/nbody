@@ -111,7 +111,7 @@ See below for **Sprint Requirements** and details for easy navigation and checki
 ```
 
 ## Requirements
-- Any C++20 compliant compiler
+- Any C++17 compliant compiler
 - CMake 3.10 or higher
 
 ## Building the Project
